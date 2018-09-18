@@ -45,7 +45,7 @@ def move_down():
 
 def move_left_to_center():
     x,y = 0+25,0+90
-    while x<800 - 25:
+    while x<800//2:
         clear_canvas_now()
         grass.draw_now(400,30)
         character.draw_now(x,y)
@@ -59,8 +59,20 @@ def make_rectangle():
     move_down()
     move_left_to_center()
 
+import math
+#각도바꾸는 계산식이 있다고한다. 함 보자
 def make_circle():
-    pass
+    cx, cy, r = 800//2,600//2,(600-180)//2
+    degree = -90
+    while degree <270:
+        radian=math.radians(degree)
+        x = cx+r*math.cos(radian)
+        y = cy+r*math.sin(radian)
+        clear_canvas_now()
+        grass.draw_now(400,30)
+        character.draw_now(x,y)
+        degree+=1
+        delay(0.01)
 
 while True:
     make_rectangle()
