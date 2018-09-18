@@ -26,9 +26,15 @@ def move_up():
         delay(0.01)
 
 def move_left():
-    pass
 def move_down():
-    pass
+    x,y = 0+25,600-50
+    while y>0+50:
+        clear_canvas_now()
+        grass.draw_now(400,30)
+        character.draw_now(x,y)
+        y-=10
+        delay(0.01)
+
 def move_left_to_center():
     pass
 
