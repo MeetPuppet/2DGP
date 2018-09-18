@@ -12,11 +12,12 @@
     <session id="2112632936">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.33" value="1" />
+          <entry key="project.open.time.47" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -46,10 +47,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/move_character_with_mouse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
+            <state relative-caret-position="256">
               <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
               <folding>
-                <marker date="1537249428266" expanded="true" signature="79:419" ph="..." />
+                <marker date="1537267230075" expanded="true" signature="79:419" ph="..." />
               </folding>
             </state>
           </provider>
@@ -69,7 +70,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="683" />
     <option name="height" value="728" />
   </component>
@@ -200,9 +201,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="683" height="728" extended-state="0" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.124255955" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.124255955" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -241,10 +242,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/move_character_with_mouse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="256">
           <caret line="33" column="14" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="14" />
           <folding>
-            <marker date="1537249428266" expanded="true" signature="79:419" ph="..." />
+            <marker date="1537267230075" expanded="true" signature="79:419" ph="..." />
           </folding>
         </state>
       </provider>
