@@ -16,23 +16,39 @@ def move_to_there_01():
         character.clip_draw(frameX * 100, frameY * 100, 100, 100, x, y)
         update_canvas()
         frameX = (frameX + 1) % 8
-        if x > 203+1:
-            x-=10
-            frameX=0
-        else:
+        if x > 203:
+            x-=1
+            frameY=0
+        elif x < 203:
             x+=1
-            frameX=1
+            frameY=1
 
-        if y < 535+1:
-            y+=10
-        else:
+        if y < 535:
+            y+=1
+        elif y > 535:
             y-=1
 
-
-
-
 def move_to_there_02():
-    pass
+    x, y=203, 535
+    frameX=0
+    frameY=0
+    while x>132 or y>243:
+        clear_canvas()
+        grass.draw(400, 30)
+        character.clip_draw(frameX * 100, frameY * 100, 100, 100, x, y)
+        update_canvas()
+        frameX = (frameX + 1) % 8
+        if x > 132:
+            x-=1
+            frameY=0
+        elif x<132:
+            x+=1
+            frameY=1
+
+        if y < 243:
+            y+=1
+        elif y>243:
+            y-=1
 
 
 def move_to_there_03():
@@ -66,6 +82,11 @@ def move_to_there_09():
 def move_to_there_10():
     pass
 
-while True :
+def move_arround():
     move_to_there_01()
+    move_to_there_02()
+
+
+while True :
+    move_arround()
     pass
