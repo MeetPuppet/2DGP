@@ -5,8 +5,16 @@ open_canvas()
 grass = load_image('grass.png')
 character = load_image('character.png')
 
+#코드의 의도가 확실해짐
 def move_from_center_to_right():
-    pass
+    x,y = 800//2,90
+    while x<800 - 25:
+        clear_canvas_now()
+        grass.draw_now(400,30)
+        character.draw_now(x,y)
+        x+=10
+        delay(0.01)
+    #완성 후  pass는 제거
 def move_up():
     pass
 def move_left():
