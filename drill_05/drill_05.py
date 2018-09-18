@@ -36,7 +36,7 @@ def move_left():
 
 def move_down():
     x,y = 0+25,600-50
-    while y>0+50:
+    while y>0+90:
         clear_canvas_now()
         grass.draw_now(400,30)
         character.draw_now(x,y)
@@ -44,7 +44,13 @@ def move_down():
         delay(0.01)
 
 def move_left_to_center():
-    pass
+    x,y = 0+25,0+90
+    while x<800 - 25:
+        clear_canvas_now()
+        grass.draw_now(400,30)
+        character.draw_now(x,y)
+        x+=10
+        delay(0.01)
 
 def make_rectangle():
     move_from_center_to_right()#첫 코드가 함수?
