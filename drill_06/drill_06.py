@@ -14,6 +14,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
+def get_move():
+    pass
 
 open_canvas(KPU_WIDTH,KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
@@ -22,6 +24,7 @@ cursor = load_image('hand_arrow.png')
 
 running = True
 x,y = KPU_WIDTH//2, KPU_HEIGHT//2
+targetX, targetY = KPU_WIDTH//2, KPU_HEIGHT//2
 cursorX, cursorY = 0,0
 frameX=0
 frameY=2
