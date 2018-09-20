@@ -18,17 +18,27 @@ def handle_events():
             if event.button == SDL_BUTTON_LEFT:
                 targetX,targetY=cursorX,cursorY
 
+
 def get_move(targetX, targetY):
     global x,y
+    global frameY
     if(targetX<x):
         x-=1
+        frameY=0
     elif(targetX>x):
         x+=1
+        frameY=1
 
     if(targetY>y):
         y+=1
     elif(targetY<y):
         y-=1
+
+    if x==targetX and y==targetY:
+        if frameY==0:
+            frameY=2
+        elif frameY==1:
+            frameY=3
 
 
 open_canvas(KPU_WIDTH,KPU_HEIGHT)
@@ -41,7 +51,7 @@ x,y = KPU_WIDTH//2, KPU_HEIGHT//2
 targetX, targetY = KPU_WIDTH//2, KPU_HEIGHT//2
 cursorX, cursorY = 0,0
 frameX=0
-frameY=2
+frameY=0
 show_cursor()
 
 while running:
