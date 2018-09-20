@@ -25,6 +25,11 @@ def get_move(targetX, targetY):
     elif(targetX>x):
         x+=1
 
+    if(targetY>y):
+        y+=1
+    elif(targetY<y):
+        y-=1
+
 
 open_canvas(KPU_WIDTH,KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
@@ -47,7 +52,6 @@ while running:
     update_canvas()
     frameX=(frameX+1)%8
 
-    delay(0.01)
 
     handle_events()
     get_move(targetX,targetY)
