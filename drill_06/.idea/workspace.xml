@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42bfff9a-8b3e-44fe-ba33-f6e91d64c04a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="42bfff9a-8b3e-44fe-ba33-f6e91d64c04a" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,10 +12,10 @@
     <session id="2064193770">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.1" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.3" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -47,8 +45,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_07/line.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+            <state relative-caret-position="190">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
                 <marker date="1538382660149" expanded="true" signature="173:641" ph="..." />
@@ -60,7 +58,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_05/character_runs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-136">
+            <state relative-caret-position="171">
               <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="13" />
             </state>
           </provider>
@@ -68,9 +66,7 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_04/character_runs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-171" />
-          </provider>
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -110,6 +106,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -121,7 +118,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -277,7 +273,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="0" width="973" height="1047" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2502674" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -306,9 +301,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
           <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
-          <folding>
-            <marker date="1537434942809" expanded="true" signature="43:757" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -316,9 +308,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="437">
           <caret line="23" column="26" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
-          <folding>
-            <marker date="1537433422235" expanded="true" signature="169:401" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -326,9 +315,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="251">
           <caret line="25" column="13" lean-forward="true" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <marker date="1537435134619" expanded="true" signature="79:418" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -343,9 +329,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="572">
           <caret line="97" column="48" lean-forward="true" selection-start-line="97" selection-start-column="48" selection-end-line="97" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -363,28 +346,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_05/character_runs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-136">
-          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_04/character_runs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-171" />
-      </provider>
-    </entry>
     <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_07/line.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="190">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
             <marker date="1538382660149" expanded="true" signature="173:641" ph="..." />
           </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_05/character_runs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/2015182005-2dgp/2DGP/drills/drill_04/character_runs.py">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>
