@@ -7,7 +7,7 @@ def stop():
 
 
 def prepare_turtle_canvas():
-    turtle.setup(1024, 768)
+    turtle.setup(800, 600)
     turtle.bgcolor(0.2, 0.2, 0.2)
     turtle.penup()
     turtle.hideturtle()
@@ -65,43 +65,25 @@ def draw_curve_3_points(p1, p2, p3):
         draw_point((x,y))
 
 
-def draw_curve_4_points(p1, p2, p3, p4):
-    draw_big_point(p1)
-    draw_big_point(p2)
-    draw_big_point(p3)
-    draw_big_point(p4)
 
-    # draw p1-p2
-    for i in range(0, 50, 2):
-        t = i / 100
-        x = (2*t**2-3*t+1)*p1[0]+(-4*t**2+4*t)*p2[0]+(2*t**2-t)*p3[0]
-        y = (2*t**2-3*t+1)*p1[1]+(-4*t**2+4*t)*p2[1]+(2*t**2-t)*p3[1]
-        draw_point((x, y))
-    draw_point(p2)
+def draw_curve_4_points(prev, start, end, next):
+    draw_big_point(start)
+    draw_big_point(end)
 
-    # draw p2-p3
-    for i in range(0, 100, 2):
-        t = i / 100
-        x = ((-t**3 + 2*t**2 - t)*p1[0] + (3*t**3 - 5*t**2 + 2)*p2[0] + (-3*t**3 + 4*t**2 + t)*p3[0] + (t**3 - t**2)*p4[0])/2
-        y = ((-t**3 + 2*t**2 - t)*p1[1] + (3*t**3 - 5*t**2 + 2)*p2[1] + (-3*t**3 + 4*t**2 + t)*p3[1] + (t**3 - t**2)*p4[1])/2
-        draw_point((x, y))
-    draw_point(p3)
-
-    # draw p3-p4
-    for i in range(50, 100, 2):
-        t = i / 100
-        x = (2*t**2-3*t+1)*p2[0]+(-4*t**2+4*t)*p3[0]+(2*t**2-t)*p4[0]
-        y = (2*t**2-3*t+1)*p2[1]+(-4*t**2+4*t)*p3[1]+(2*t**2-t)*p4[1]
-        draw_point((x, y))
-    draw_point(p4)
+    for i in range(0,100,5):
+        t = i/100
+        x = ((-t**3+2*t**2-t)*prev[0]+(3*t**3-5*t**2+2)*start[0]+(-3*t**3+4*t**2+t)*end[0]+(t**3-t**2)*next[0])*0.5
+        y = ((-t**3+2*t**2-t)*prev[1]+(3*t**3-5*t**2+2)*start[1]+(-3*t**3+4*t**2+t)*end[1]+(t**3-t**2)*next[1])*0.5
+        draw_point((x,y))
 
 prepare_turtle_canvas()
 
-point = [(-300, 200), (400, 350), (300, -300), (-200, -200)]
+point = [(-30, 20), (40, 35), (30, -30), (-20, -20)]
+#point = [(random.randint(-300,300),random.randint(-250,250)) for i in range(10)]
 arrow=0
 size=len(point)
+print(size)
 while True:
-    arrow=0
     p1=point[arrow%size]
     arrow+=1
     p2=point[arrow%size]
@@ -110,6 +92,7 @@ while True:
     arrow+=1
     p4=point[arrow%size]
     draw_curve_4_points(p1,p2,p3,p4)
+    arrow-=2
 
 
 
