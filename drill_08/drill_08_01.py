@@ -38,10 +38,20 @@ def prepare_turtle_canvas():
     turtle.listen()
 
 
+def draw_big_point(p):
+    turtle.goto(p)
+    turtle.color(0.8,0.9,0)
+    turtle.dot(15)
+    turtle.write('     '+str(p))
+
+def draw_point(p):
+    turtle.goto(p)
+    turtle.dot(5, random.random(), random.random(), random.random())
+
 def draw_p4_line(prev,start,end,next):
     t=0
     while t<=1+0.01:
-        x=
+        x=()*0.5
         t+=0.01
     pass
 
