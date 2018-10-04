@@ -3,6 +3,7 @@ import random
 
 def draw_p4_line(prev,start,end,next):
     global frame
+    global character
     t=0
     clear_canvas()
     while t<=1:
@@ -16,9 +17,10 @@ def draw_p4_line(prev,start,end,next):
             frame[1]=0
         else:
             frame[1]=1
-        character.clip_draw_to_origin(frame[0]*100,frame[1]*100,100,100,x,y)
         t+=0.01
         delay(0.001)
+
+
 
 open_canvas()
 back = load_image('KPU_GROUND.png')
@@ -29,7 +31,7 @@ character = load_image('animation_sheet.png')
 frame=[0,0]
 arrow=0
 size=10
-points=[(random.randint(0+1,800-1),random.randint(0+1,600-1)) for i in range(size)]
+points=[(random.randint(100+1,700-1),random.randint(100+1,500-1)) for i in range(size)]
 
 while True:
     p1=points[arrow%size]
@@ -40,4 +42,7 @@ while True:
     arrow+=1
     p4=points[arrow%size]
     draw_p4_line(p1,p2,p3,p4)
+    character.(frame[0]*100,frame[1]*100,100,100,p3[0],p3[1])
     arrow-=2
+
+close_canvas()
