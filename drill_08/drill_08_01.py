@@ -50,15 +50,18 @@ def draw_point(p):
 
 def draw_p4_line(prev,start,end,next):
     t=0
+    draw_big_point(start)
     while t<=1+0.01:
-        x=()*0.5
+        x=((-t**3+2*t**2-t)*prev[0]+(3*t**3-5*t**2+2)*start[0]+(-3*t**3+4*t**2+t)*end[0]+(t**3-t**2)*next)*0.5
+        y=((-t**3+2*t**2-t)*prev[0]+(3*t**3-5*t**2+2)*start[0]+(-3*t**3+4*t**2+t)*end[0]+(t**3-t**2)*next)*0.5
+        draw_point((x,y))
         t+=0.01
-    pass
+    draw_big_point(end)
 
 points=[(-300,200),(400,350),(300,-300),(-200,-200)]
 
-arrow=0
+arrow=1
 size=len(points)
 
 while True:
-    pass
+    
