@@ -61,6 +61,7 @@ running = True
 # initialization code
 open_canvas()
 team = [Boy() for i in range(11)]
+balls = [Ball() for i in range(20)]
 grass = Grass()
 
 # game main loop code
@@ -69,12 +70,16 @@ while(running):
 
     for boy in team:
         boy.update()
+    for ball in balls:
+        ball.update()
 
     clear_canvas()
     grass.draw()
 
     for boy in team:
         boy.draw()
+    for ball in balls:
+        ball.draw()
 
     update_canvas()
 
