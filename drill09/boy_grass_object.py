@@ -23,6 +23,14 @@ class Boy:
         self.image.clip_draw(self.frame*100,0,100,100,self.x,self.y)
 
 class Ball:
+    def __init__(self):
+        self.x, self.y = random.randint(50,650),599
+        self.moveSpeed = random.randint(6,10)
+        self.isBig = random.randint(0,1)
+        if self.isBig == 0:
+            self.image = load_image('ball21x21.png')
+        else:
+            self.image = load_image('ball41x41.png')
 
 
 
