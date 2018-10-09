@@ -44,6 +44,8 @@ class Ball:
             else:
                 self.y = 45 + 20
 
+    def draw(self):
+        self.image.draw(self.x,self.y)
 
 def handle_events():
     global running
