@@ -32,6 +32,17 @@ class Ball:
         else:
             self.image = load_image('ball41x41.png')
 
+    def update(self):
+        if(self.isBig==0):
+            if(self.y > 45 + 10):
+                self.y-=self.moveSpeed
+            else:
+                self.y = 45 + 10
+        else:
+            if(self.y > 45 + 20):
+                self.y-=self.moveSpeed
+            else:
+                self.y = 45 + 20
 
 
 def handle_events():
