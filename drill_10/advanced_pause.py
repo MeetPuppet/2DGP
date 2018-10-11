@@ -32,6 +32,7 @@ def draw():
     global image
 
     clear_canvas()
+    #game_framework.GameState(main_state).draw()
     main_state.draw()
     if mode == 1:
         image.draw(800//2, 600//2)
