@@ -5,6 +5,7 @@ import os
 import game_framework
 import title_state
 import basic_pause
+import advanced_pause
 
 from pico2d import *
 
@@ -78,7 +79,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
-            game_framework.push_state(basic_pause)
+            game_framework.push_state(advanced_pause)
 
 def update():
     boy.update()

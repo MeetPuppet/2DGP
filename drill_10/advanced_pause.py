@@ -2,8 +2,9 @@ from pico2d import *
 import game_framework
 import basic_pause
 
-name = "BasicPause"
+name = "AdvancedPause"
 image = None
+mode = 0
 
 def enter():
     global image
@@ -18,6 +19,12 @@ def exit():
 
 
 def update():
+    global mode
+    if mode == 0:
+        mode = 1
+    else:
+        mode = 0
+    delay(0.1)
     pass
 
 
@@ -26,7 +33,8 @@ def draw():
 
 
     clear_canvas()
-    image.draw(800//2, 600//2)
+    if mode == 1:
+        image.draw(800//2, 600//2)
     update_canvas()
     pass
 
