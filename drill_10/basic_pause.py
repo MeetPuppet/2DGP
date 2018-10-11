@@ -1,14 +1,14 @@
+from pico2d import *
 import game_framework
 import main_state
 
 name = "BasicPause"
 image = None
-logo_time = 0.0
-
+mode = 0
 
 def enter():
     global image
-    image = load_image('kpu_credit.png')
+    image = load_image('new_pause.png')
     pass
 
 
@@ -19,20 +19,24 @@ def exit():
 
 
 def update():
-    global logo_time
-
-    if (logo_time > 1.0):
-        logo_time = 0
-        game_framework.change_state(title_state)
-    delay(0.01)
-    logo_time+=0.01
+    global mode
+    if mode == 0:
+        mode = 1
+    else:
+        mode = 0
+    delay(0.05)
     pass
 
 
 def draw():
     global image
+
+    global mode
+    delay(0.3)
+
     clear_canvas()
-    image.draw(400,300)
+    if mode == 0:
+        image.draw(800//2, 600//2)
     update_canvas()
     pass
 
@@ -41,6 +45,12 @@ def draw():
 
 def handle_events():
     events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        else:
+            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
+                game_framework.change_state(main_state)
     pass
 
 

@@ -2,11 +2,12 @@ import random
 import json
 import os
 
+import game_framework
 import title_state
+import basic_pause
 
 from pico2d import *
 
-import game_framework
 
 
 
@@ -41,6 +42,7 @@ class Boy:
             self.dir = -1
         elif self.x <= 0:
             self.dir = 1
+        delay(0.05)
 
     def draw(self):
         self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
@@ -75,6 +77,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
+            game_framework.change_state(basic_pause)
 
 def update():
     boy.update()
