@@ -7,7 +7,6 @@ import title_state
 from pico2d import *
 
 import game_framework
-import title_state
 
 
 
@@ -49,7 +48,6 @@ class Boy:
 
 def enter():
     global boy, grass
-    open_canvas()
     boy = Boy()
     grass = Grass()
     pass
@@ -59,7 +57,6 @@ def exit():
     global boy, grass
     del(boy)
     del(grass)
-    close_canvas()
     pass
 
 
@@ -89,14 +86,3 @@ def draw():
     boy.draw()
     update_canvas()
 
-
-
-
-
-enter()
-while True:
-    handle_events()
-    update()
-    draw()
-
-exit()
