@@ -1,6 +1,6 @@
 from pico2d import *
 import game_framework
-import basic_pause
+import main_state
 
 name = "AdvancedPause"
 image = None
@@ -31,8 +31,8 @@ def update():
 def draw():
     global image
 
-
     clear_canvas()
+    main_state.draw()
     if mode == 1:
         image.draw(800//2, 600//2)
     update_canvas()
