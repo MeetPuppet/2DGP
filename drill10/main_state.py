@@ -91,12 +91,3 @@ def draw():
 
 
 
-
-
-enter()
-while True:
-    handle_events()
-    update()
-    draw()
-
-exit()
