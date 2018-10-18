@@ -1,6 +1,8 @@
 from pico2d import *
 import game_framework
 import enum
+import random
+import math
 
 def WINSIZEX(): return 1024
 def WINSIZEY(): return 768
@@ -9,6 +11,10 @@ name = 'inGame'
 
 running = True
 player = None
+stage = None
+bulletList = []
+itemList = []
+boomList = []
 count = 0
 
 class UI:#maybe unused
@@ -23,12 +29,10 @@ class UI:#maybe unused
     def update(self):
         pass
     def render(self):
-        pass
+        self.a=0
     pass
 
 class Kirby:
-
-
     def __init__(self):
         self.x, self.y =-10,WINSIZEY()//2
         self.dirX, self.dirY = 0, 0
@@ -36,6 +40,7 @@ class Kirby:
         self.chargeCount = 0
         self.countOn = False
         self.isEvent = True
+        self.maxHP = 5
         self.HP = 5
         self.boom = 2
         self.state = kirbyStatus.IDLE
@@ -70,7 +75,7 @@ class Kirby:
             pass
         # status move
 
-        print(self.chargeCount)
+        #print(self.chargeCount)
 
         # event, can't move
         if self.isEvent:
@@ -87,13 +92,17 @@ class Kirby:
 
         # move Locate
         self.x = self.x + 10 * self.dirX
+        if self.x>1024-24 or self.x<0 + 24:
+            self.x = self.x - 10 * self.dirX
         self.y = self.y + 10 * self.dirY
+        if self.y > 768 - 24 or self.y < 0 + 24:
+            self.y = self.y - 10 * self.dirY
         if self.countOn == True:
             self.chargeCount = self.chargeCount + 1
+        if self.HP > self.maxHP:
+            self.HP = self.maxHP
         delay(0.05)
         # move Locate
-
-       # pass
     def render(self):
         if self.state == kirbyStatus.IDLE:
             self.IDLE.clip_draw(self.frameX*48,0,48,40,self.x,self.y)
@@ -104,8 +113,13 @@ class Kirby:
 
         #pass
 
+    def getPoint(self): return (self.x,self.y)
+
     def getHP(self): return self.HP
+    def heal(self): self.HP += 1
+
     def getBoom(self): return self.boom
+    def setBoom(self,count): self.boom += count
 
     def getState(self): return self.state
     def setState(self, state): self.state = state
@@ -113,11 +127,104 @@ class Kirby:
     def setFrameYZero(self): self.frameY=0
     def setDirectX(self, num): self.dirX += num
     def setDirectY(self, num): self.dirY += num
+
     def getCount(self): return self.chargeCount
     def isCharge(self, BOOL): self.countOn = BOOL
     def resetCount(self): self.chargeCount=0
-    def useBoom(self, num): self.boom -= num
+
+
     pass
+
+class kirbyBullet:
+    class status(enum.Enum):
+        NOMAL = 0
+        HARD = 1
+        MAX = 2
+    def __init__(self, point, power):
+        self.x, self.y = point[0], point[1]
+        self.size = power;
+        self.frame=random.randint(0,8)
+        if self.size == 0:
+            self.damage = 1
+            self.image = load_image('image/kirby/kirbyBullet.png')
+        elif self.size == 1:
+            self.damage = 4
+            self.image = load_image('image/kirby/kirbyBullet2.png')
+        elif self.size == 2:
+            self.damage = 10
+            self.image = load_image('image/kirby/maxBullet.png')
+        else:
+            self.damage = 5
+            self.image = load_image('image/kirby/StarBullet.png')
+        pass
+    def update(self):
+        if self.size == 0:
+            self.x += 35
+            self.frame= (self.frame+1)%3
+        elif self.size == 1:
+            self.x += 50
+            self.frame= (self.frame+1)%6
+        elif self.size == 2:
+            self.x += 70
+            self.frame= (self.frame+1)%6
+        else:
+            self.x += 50
+            self.frame= (self.frame+1)%8
+
+
+
+        pass
+    def render(self):
+        if self.size == 0:
+            self.image.clip_draw(self.frame*72,0,72,10,self.x,self.y)
+        elif self.size == 1:
+            self.image.clip_draw(self.frame*126,0,126,48,self.x,self.y)
+        elif self.size == 2:
+            self.image.clip_draw(self.frame*232,0,232,150,self.x,self.y)
+        else:
+            self.image.clip_draw(self.frame*30,0,30,30,self.x,self.y)
+        pass
+
+
+    def getX(self): return self.x
+    def getKind(self): return self.size
+    def getDamage(self): return self.damage
+    pass
+
+class kirbyBoom:
+    class status(enum.Enum):
+        READY = 0
+        BOOM = 1
+    def __init__(self,point):
+        self.x, self.y = point[0],point[1]
+        self.activated = False
+        self.limit = 1.0
+        self.frame = 0
+        self.readyImage = load_image("image/kirby/BoomBullet.png")
+        self.actImage = load_image("image/kirby/BoomShot.png")
+        pass
+    def update(self):
+        self.frame = (self.frame + 1) % 2
+        self.limit -=0.01
+        if self.limit < 0.3:
+            self.activated = True
+
+        if self.activated == False:
+            self.x+=4
+        else:
+            self.x+=2
+        pass
+    def render(self):
+        if self.activated == False:
+            self.readyImage.clip_draw(self.frame*46,0,46,46,self.x,self.y)
+        else:
+            self.actImage.clip_draw(self.frame*512,0,512,512,self.x,self.y)
+        pass
+
+    def boomActivate(self): self.activated = True
+    def getLimitTime(self): return self.limit
+    pass
+
 
 class Boss:
     class status(enum.Enum):
@@ -148,28 +255,82 @@ class Minion:
     pass
 
 class Item:
-    class status(enum.Enum):
-        COIN = 0
-        POWER = 1
-        BOOM = 2
-    def __init__(self):
+    def __init__(self,itemNum, point):
+        self.x, self.y = point[0],point[1]
+        self.dirX, self.dirY = -12,9
+        self.angle = -6;
+        self.itemNumber = itemNum;
+        self.frame=0
+        self.liveTime=5.0
+        if 0 == itemNum:
+            self.image = load_image("image/item/coin.png");
+            pass
+        if 1 == itemNum:
+            self.image = load_image("image/item/PowerUp.png");
+            pass
+        if 2 == itemNum:
+            self.image = load_image("image/item/Boom.png");
+            pass
         pass
     def update(self):
+
+        self.frame=(self.frame+1)%9
+        self.x+=math.cos(self.angle) * self.dirX
+        if(self.x>1024-10 or self.x<0+10):
+            self.dirX = self.dirX*(-1)
+
+        self.y+=math.sin(self.angle)*self.dirY
+        if(self.y>768-10 or self.y<0+10):
+            self.dirY = self.dirY*(-1)
+
+        self.liveTime-=0.01
         pass
     def render(self):
+        if self.itemNumber == 0:
+            if self.liveTime < 2 and self.frame%3==0:
+                pass
+            else:
+                self.image.clip_draw(self.frame*32,0,32,32,self.x,self.y)
+        else:
+            if self.liveTime < 2 and self.frame%3==0:
+                pass
+            else:
+                self.image.draw(self.x,self.y)
         pass
     pass
+
+    def getLiveTime(self): return self.liveTime
 
 class Stage:
     class status(enum.Enum):
         ONE = 0
         TWO = 1
         THREE = 2
-    def __init__(self):
+    def __init__(self, stage):
+        if(stage==0):
+            self.frame1X, self.frame1Y =0,0
+            self.frame2X, self.frame2Y =1024,0
+        elif (stage == 1):
+            self.frame1X, self.frame1Y =0,1
+            self.frame2X, self.frame2Y =1024,1
+        else:
+            self.frame1X, self.frame1Y =0,2
+            self.frame2X, self.frame2Y =1024,2
+        self.image1 = load_image("image/map.jpg")
+        self.image2 = load_image("image/map.jpg")
         pass
     def update(self):
+        self.frame1X -= 20
+        self.frame2X -= 20
+        if self.frame1X < -1004:
+            self.frame1X=self.frame1X*-1
+        if self.frame2X < -1004:
+            self.frame2X=self.frame2X*-1
+
         pass
     def render(self):
+        self.image1.clip_draw(0,self.frame1Y*768,1024,768,self.frame1X+(1024//2),768//2)
+        self.image2.clip_draw(0,self.frame2Y*768,1024,768,self.frame2X+(1024//2),768//2)
         pass
     pass
 
@@ -190,30 +351,6 @@ class effect:
 
 
 
-class kirbyBullet:
-    class status(enum.Enum):
-        NOMAL = 0
-        HARD = 1
-        MAX = 2
-    def __init__(self):
-        pass
-    def update(self):
-        pass
-    def render(self):
-        pass
-    pass
-
-class kirbyBoom:
-    class status(enum.Enum):
-        READY = 0
-        BOOM = 1
-    def __init__(self):
-        pass
-    def update(self):
-        pass
-    def render(self):
-        pass
-    pass
 
 
 class enemyBullet:
@@ -246,7 +383,9 @@ class kirbyStatus(enum.Enum):
 
 def enter():
     global player
+    global stage
     player = Kirby()
+    stage = Stage(0)
     pass
 
 
@@ -266,6 +405,9 @@ def resume():
 
 def handle_events():
     global player
+    global bulletList
+    global itemList
+    global boomList
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -275,6 +417,12 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 game_framework.quit()
+            if event.key == SDLK_0:
+                itemList += [Item(0,(400,300))]
+            if event.key == SDLK_1:
+                itemList += [Item(1,(400,300))]
+            if event.key == SDLK_2:
+                itemList += [Item(2,(400,300))]
 
             if event.key == SDLK_RIGHT:
                 player.setDirectX(1)
@@ -288,9 +436,11 @@ def handle_events():
             if event.key == SDLK_z:
                 player.isCharge(True)
                 # nomalBullet
-                if event.key == SDLK_x:
-                    player.useBoom(1)
-                    # useBoom
+                bulletList+=[kirbyBullet(player.getPoint(),0)]
+            if event.key == SDLK_x:
+                player.setBoom(-1)
+                boomList+=[kirbyBoom(player.getPoint())]
+                # useBoom
 
             # key down
 
@@ -309,9 +459,11 @@ def handle_events():
                 if player.getState() == kirbyStatus.READY:
                     if player.getCount() >= 35:
                         # charge Shot
+                        bulletList+=[kirbyBullet(player.getPoint(),2)]
                         player.setState(kirbyStatus.SHOT)
                     else:
                         # nomalBullet
+                        bulletList+=[kirbyBullet(player.getPoint(),1)]
                         player.setState(kirbyStatus.IDLE)
                     player.setFrameYZero()
                 player.resetCount()
@@ -319,11 +471,31 @@ def handle_events():
             # key up
         # command Locate
 def update():
-    global player
+    stage.update()
     player.update()
-
+    for bullet in bulletList:
+        bullet.update()
+        if bullet.getX() > 1024+130:
+            bulletList.remove(bullet)
+    #print(len(bulletList))
+    for item in itemList:
+        item.update()
+        if item.getLiveTime() < 0:
+            itemList.remove(item)
+    for boom in boomList:
+        boom.update()
+        if boom.getLimitTime() < 0:
+            boomList.remove(boom)
+    #print(len(itemList))
 
 def draw():
     clear_canvas()
+    stage.render()
     player.render()
+    for bullet in bulletList:
+        bullet.render()
+    for item in itemList:
+        item.render()
+    for boom in boomList:
+        boom.render()
     update_canvas()
