@@ -15,16 +15,13 @@ stage = None
 bulletList = []
 itemList = []
 boomList = []
+minionList = []
+bossList = []
 count = 0
 
 class UI:#maybe unused
-    class where(enum.Enum):
-        OUTGAME = 0
-        INGAME = 1
-    class type(enum.Enum):
-        OUTGAME = 0
-        INGAME = 1
     def __init__(self, inGame, type):
+
         pass
     def update(self):
         pass
@@ -83,7 +80,6 @@ class Kirby:
                 self.x = self.x + 5
                 if(self.x>100):
                     self.isEvent = False
-                delay(0.05)
                 return
                 pass
             elif self.state == kirbyStatus.DEAD:
@@ -93,15 +89,14 @@ class Kirby:
         # move Locate
         self.x = self.x + 10 * self.dirX
         if self.x>1024-24 or self.x<0 + 24:
-            self.x = self.x - 10 * self.dirX
+            self.x = self.x - 15 * self.dirX
         self.y = self.y + 10 * self.dirY
         if self.y > 768 - 24 or self.y < 0 + 24:
-            self.y = self.y - 10 * self.dirY
+            self.y = self.y - 15 * self.dirY
         if self.countOn == True:
             self.chargeCount = self.chargeCount + 1
         if self.HP > self.maxHP:
             self.HP = self.maxHP
-        delay(0.05)
         # move Locate
     def render(self):
         if self.state == kirbyStatus.IDLE:
@@ -117,6 +112,7 @@ class Kirby:
 
     def getHP(self): return self.HP
     def heal(self): self.HP += 1
+    def hit(self): self.HP -= 1
 
     def getBoom(self): return self.boom
     def setBoom(self,count): self.boom += count
@@ -221,6 +217,7 @@ class kirbyBoom:
             self.actImage.clip_draw(self.frame*512,0,512,512,self.x,self.y)
         pass
 
+    def getPoint(self): return (self.x,self.y)
     def boomActivate(self): self.activated = True
     def getLimitTime(self): return self.limit
     pass
@@ -233,13 +230,119 @@ class Boss:
         FIRE = 2
         CHARGE = 3
         DEAD = 4
+
     def __init__(self):
+        self.x, self.y = 1500,768//2
+        self.maxHP, self.HP = 500, 500
+        self.frame = 0
+        self.state = 0
+        self.guarding = 0
+        self.wait = 120
+        self.falling = 5
+        self.IDLE = load_image("image/boss/batafireIDLE.png")
+        self.READY = load_image("image/boss/batafireReady.png")
+        self.FIRE = load_image("image/boss/batafireFire.png")
+        self.CHARGE = load_image("image/boss/batafireCharge.png")
+        self.DEAD = load_image("image/boss/batafireDead.png")
         pass
-    def update(self):
+    def update(self,targetXY):
+        if self.guarding > 0 : self.guarding -= 1
+        if self.HP <= 0: self.state = 4
+
+        if self.state == 0:
+            self.frame = (self.frame + 1) % 10
+
+            if targetXY[0] < 550 and self.x > 879:
+                self.x-=8
+                pass
+            elif targetXY[0] >= 550 and self.x<1000:
+                self.x+=8
+
+            if targetXY[1] > self.y - 20:
+                self.y+=5
+                pass
+            elif targetXY[1] < self.y- 50:
+                self.y-=5
+                pass
+
+            self.wait -= 1
+            if self.wait < 0:
+                self.frame = 0
+                self.state = 1
+            pass
+
+        elif self.state == 1:
+            self.frame = self.frame + 1
+            if self.frame == 3:
+                if targetXY[0] > 200:
+                    self.state = 2
+                    self.wait = 30
+                else:
+                    self.state = 3
+                self.frame = 0
+            pass
+
+        elif self.state == 2:
+            self.wait -= 1
+            self.frame = (self.frame + 1) % 4
+            if self.wait < 0:
+                self.wait = 120
+                self.frame = 0
+                self.state = 0
+                pass
+            pass
+        elif self.state == 3:
+            self.frame = (self.frame + 1) % 4
+            if self.x > -300 :
+                self.x-=50
+            else:
+                self.wait = 120
+                self.frame = 0
+                self.x = 1300
+                self.state = 0
+
+            pass
+        elif self.state == 4:
+            if self.falling > 0 : self.frame = 0
+            else : self.frame = 1
+
+            self.y+=self.falling
+            self.falling-=0.2
+
+            if self.falling > -1 :
+                delay(0.1)
+
+            pass
         pass
     def render(self):
+        if self.state == 0:
+            self.IDLE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            pass
+        if self.state == 1:
+            self.READY.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            pass
+        if self.state == 2:
+            self.FIRE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            pass
+        if self.state == 3:
+            self.CHARGE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            pass
+        if self.state == 4:
+            self.DEAD.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            pass
         pass
     pass
+
+    def downHP(self,damage):
+        if self.guarding < 0:
+            self.HP -= damage
+            self.guarding = 10
+        pass
+
+    def getPoint(self): return (self.x, self.y)
+    def getState(self): return self.state
+    def getHP(self): return self.HP
+    def Kill(self): self.HP = 0
 
 class Minion:
     class status(enum.Enum):
@@ -258,7 +361,7 @@ class Item:
     def __init__(self,itemNum, point):
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
-        self.angle = -6;
+        self.angle = random.randint(-6,6);
         self.itemNumber = itemNum;
         self.frame=0
         self.liveTime=5.0
@@ -299,6 +402,7 @@ class Item:
         pass
     pass
 
+    def getPoint(self): return (self.x, self.y)
     def getLiveTime(self): return self.liveTime
 
 class Stage:
@@ -405,6 +509,7 @@ def resume():
 
 def handle_events():
     global player
+    global bossList
     global bulletList
     global itemList
     global boomList
@@ -442,6 +547,12 @@ def handle_events():
                 boomList+=[kirbyBoom(player.getPoint())]
                 # useBoom
 
+            if event.key == SDLK_b:
+                bossList += [Boss()]
+            if event.key == SDLK_v:
+                for boss in bossList:
+                    boss.getaaHP()
+
             # key down
 
             # key up
@@ -471,6 +582,7 @@ def handle_events():
             # key up
         # command Locate
 def update():
+    delay(0.04)
     stage.update()
     player.update()
     for bullet in bulletList:
@@ -486,12 +598,19 @@ def update():
         boom.update()
         if boom.getLimitTime() < 0:
             boomList.remove(boom)
+    print(len(bossList))
+    for boss in bossList:
+        boss.update(player.getPoint())
+        if boss.getPoint()[1] <= -200 and boss.getHP() <= 0:
+            bossList.remove(boss)
     #print(len(itemList))
 
 def draw():
     clear_canvas()
     stage.render()
     player.render()
+    for boss in bossList:
+        boss.render()
     for bullet in bulletList:
         bullet.render()
     for item in itemList:
