@@ -355,8 +355,8 @@ class Minion1:
         self.shotTime = 30
         self.isDead = 0
         self.isDown = 0
-        self.jumpPower = 6
-        self.gravity = 0.5
+        self.jumpPower = 10
+        self.gravity = 2.5
         self.frame = 0
         self.liveTime = 0
         if moveNumber%2 == 0:
@@ -390,9 +390,9 @@ class Minion1:
             self.x -= 15
             if self.isDown == 0:
                 self.y += self.jumpPower
-            if self.jumpPower > 6:
+            if self.jumpPower > 10:
                 self.gravity*=-1
-            elif self.jumpPower < -6:
+            elif self.jumpPower < -10:
                 self.gravity*=-1
 
             pass
