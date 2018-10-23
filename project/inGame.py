@@ -13,13 +13,22 @@ running = True
 player = None
 stage = None
 bulletList = []
-itemList = []
+
+coinList = []
+powerUpList = []
+boomUpList = []
+
 boomList = []
-minionList = []
+
+minion1List = []
+minion2List = []
+
 bossList = []
 count = 0
 
+
 class UI:#maybe unused
+
     def __init__(self, inGame, type):
 
         pass
@@ -224,13 +233,7 @@ class kirbyBoom:
 
 
 class Boss:
-    class status(enum.Enum):
-        IDLE = 0
-        READY = 1
-        FIRE = 2
-        CHARGE = 3
-        DEAD = 4
-
+    IDLE = None
     def __init__(self):
         self.x, self.y = 1500,768//2
         self.maxHP, self.HP = 500, 500
@@ -239,6 +242,7 @@ class Boss:
         self.guarding = 0
         self.wait = 120
         self.falling = 5
+        #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         self.IDLE = load_image("image/boss/batafireIDLE.png")
         self.READY = load_image("image/boss/batafireReady.png")
         self.FIRE = load_image("image/boss/batafireFire.png")
@@ -344,43 +348,121 @@ class Boss:
     def getHP(self): return self.HP
     def Kill(self): self.HP = 0
 
-class Minion:
+class Minion1:
+    image =None
+    def __init__(self,moveNumber):
+        self.pattern = moveNumber
+        self.shotTime = 30
+        self.isDead = 0
+        self.isDown = 0
+        self.jumpPower = 6
+        self.gravity = 0.5
+        self.frame = 0
+        self.liveTime = 0
+        if moveNumber%2 == 0:
+            self.x, self.y = 1074, 610
+            pass
+        else:
+            self.x, self.y = 1074, 300
+            pass
+
+        if self.image == None:
+            self.image = load_image("image/minion/scarfy.png")
+            pass
+        pass
+    def update(self):
+        self.frame = (self.frame + 1) % 4
+        if self.shotTime > 0 : self.shotTime-=1
+        if self. pattern == 0:
+            self.x = (2*self.liveTime**2-3*self.liveTime+1)*1074 + (-4*self.liveTime**2+4*self.liveTime)*350 + (2*self.liveTime**2-self.liveTime)*1074
+            self.y = (2*self.liveTime**2-3*self.liveTime+1)*768 + (-4*self.liveTime**2+4*self.liveTime)*600 + (2*self.liveTime**2-self.liveTime)*350
+            self.liveTime+=0.015
+            pass
+
+        elif self.pattern == 1:
+            self.x = (2*self.liveTime**2-3*self.liveTime+1)*1074 + (-4*self.liveTime**2+4*self.liveTime)*350 + (2*self.liveTime**2-self.liveTime)*1074
+            self.y = (2*self.liveTime**2-3*self.liveTime+1)*0 + (-4*self.liveTime**2+4*self.liveTime)*168 + (2*self.liveTime**2-self.liveTime)*418
+            self.liveTime+=0.015
+            pass
+        elif self. pattern >= 2:
+            if self.shotTime < 0: self.shotTime = 30
+            self.jumpPower -= self.gravity
+            self.x -= 15
+            if self.isDown == 0:
+                self.y += self.jumpPower
+            if self.jumpPower > 6:
+                self.gravity*=-1
+            elif self.jumpPower < -6:
+                self.gravity*=-1
+
+            pass
+        pass
+    def render(self):
+        self.image.clip_draw(self.frame*50,0,50,50,self.x,self.y)
+        pass
+    def getPoint(self): return (self.x, self.y)
+    def getState(self): return self.isDead
+    def Kill(self): self.isDead = 1
+    def getSize(self): return 0
+    def shotTiming(self): return self.shotTime
+
+    pass
+
+class Minion2:
+    image =None
     class status(enum.Enum):
         IDLE = 0
         ATTACK = 1
         DEAD = 2
     def __init__(self):
+        self.x, self.y = random.randint(512,900), -100
+        self.jumpPower = random.randint(20,28)
+        self.isDead = 0
+        self.frame = 0
+        if self.image == None:
+            self.image = load_image("image/minion/cirkyble.png")
+            pass
         pass
     def update(self):
+        if self.jumpPower > 1:
+            self.frame = 0
+        elif self.jumpPower < 1:
+            self.frame = 3
+        else:
+            if self.frame != 2:
+                self.frame = (self.frame + 1) % 3
+        self.y = self.y+self.jumpPower
+        self.jumpPower-=0.5
         pass
     def render(self):
+        self.image.clip_draw(self.frame*72,0,72,72,self.x,self.y)
         pass
+
+    def getPoint(self): return (self.x, self.y)
+    def getState(self): return self.isDead
+    def Kill(self): self.isDead = 1
+    def getFrame(self): return self.frame
     pass
 
-class Item:
-    def __init__(self,itemNum, point):
+class Coin:
+    image = None
+    def __init__(self, point):
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
-        self.angle = random.randint(-6,6);
-        self.itemNumber = itemNum;
+        self.angle = random.randint(-6,6)
         self.frame=0
         self.liveTime=5.0
-        if 0 == itemNum:
+        if self.image == None:
             self.image = load_image("image/item/coin.png");
-            pass
-        if 1 == itemNum:
-            self.image = load_image("image/item/PowerUp.png");
-            pass
-        if 2 == itemNum:
-            self.image = load_image("image/item/Boom.png");
             pass
         pass
     def update(self):
-
         self.frame=(self.frame+1)%9
         self.x+=math.cos(self.angle) * self.dirX
         if(self.x>1024-10 or self.x<0+10):
             self.dirX = self.dirX*(-1)
+        elif self.x > 1024 :
+            self.x = 1024-10
 
         self.y+=math.sin(self.angle)*self.dirY
         if(self.y>768-10 or self.y<0+10):
@@ -389,16 +471,89 @@ class Item:
         self.liveTime-=0.01
         pass
     def render(self):
-        if self.itemNumber == 0:
-            if self.liveTime < 2 and self.frame%3==0:
-                pass
-            else:
-                self.image.clip_draw(self.frame*32,0,32,32,self.x,self.y)
+        if self.liveTime < 2 and self.frame%3==0:
+            pass
         else:
-            if self.liveTime < 2 and self.frame%3==0:
-                pass
-            else:
-                self.image.draw(self.x,self.y)
+            self.image.clip_draw(self.frame*32,0,32,32,self.x,self.y)
+        pass
+    pass
+
+    def getPoint(self): return (self.x, self.y)
+    def getLiveTime(self): return self.liveTime
+
+class PowerUp:
+    image = None
+
+    def __init__(self, point):
+        self.x, self.y = point[0], point[1]
+        self.dirX, self.dirY = -12, 9
+        self.angle = random.randint(-6, 6)
+        self.frame = 0
+        self.liveTime = 5.0
+        if self.image == None:
+            self.image = load_image("image/item/PowerUp.png");
+            pass
+        pass
+
+    def update(self):
+        self.frame+=1%3
+        self.x += math.cos(self.angle) * self.dirX
+        if (self.x > 1024 - 10 or self.x < 0 + 10):
+             self.dirX = self.dirX * (-1)
+        elif self.x > 1024:
+            self.x = 1024 - 10
+
+        self.y += math.sin(self.angle) * self.dirY
+        if (self.y > 768 - 10 or self.y < 0 + 10):
+            self.dirY = self.dirY * (-1)
+
+        self.liveTime -= 0.01
+        pass
+
+    def render(self):
+        if self.liveTime < 2 and self.frame % 3 == 0:
+            pass
+        else:
+            self.image.draw(self.x, self.y)
+        pass
+
+    pass
+
+    def getPoint(self): return (self.x, self.y)
+    def getLiveTime(self): return self.liveTime
+
+class BoomUp:
+    image = None
+    def __init__(self, point):
+        self.x, self.y = point[0],point[1]
+        self.dirX, self.dirY = -12,9
+        self.angle = random.randint(-6,6)
+        self.frame = 0
+        self.liveTime=5.0
+        if self.image == None:
+            self.image = load_image("image/item/Boom.png");
+            pass
+        pass
+    def update(self):
+
+        self.frame=(self.frame+1)%3
+        self.x+=math.cos(self.angle) * self.dirX
+        if(self.x>1024-10 or self.x<0+10):
+            self.dirX = self.dirX*(-1)
+        elif self.x > 1024 :
+            self.x = 1024-10
+
+        self.y+=math.sin(self.angle)*self.dirY
+        if(self.y>768-10 or self.y<0+10):
+            self.dirY = self.dirY*(-1)
+
+        self.liveTime-=0.01
+        pass
+    def render(self):
+        if self.liveTime < 2 and self.frame%3==0:
+            pass
+        else:
+            self.image.draw(self.x,self.y)
         pass
     pass
 
@@ -511,8 +666,12 @@ def handle_events():
     global player
     global bossList
     global bulletList
-    global itemList
+    global coinList
+    global powerUpList
+    global boomUpList
     global boomList
+    global minion1List
+    global minion2List
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -523,11 +682,11 @@ def handle_events():
             if event.key == SDLK_ESCAPE:
                 game_framework.quit()
             if event.key == SDLK_0:
-                itemList += [Item(0,(400,300))]
+                coinList += [Coin((400,300))]
             if event.key == SDLK_1:
-                itemList += [Item(1,(400,300))]
+                powerUpList += [PowerUp((400,300))]
             if event.key == SDLK_2:
-                itemList += [Item(2,(400,300))]
+                boomUpList += [BoomUp((400,300))]
 
             if event.key == SDLK_RIGHT:
                 player.setDirectX(1)
@@ -549,9 +708,16 @@ def handle_events():
 
             if event.key == SDLK_b:
                 bossList += [Boss()]
+            if event.key == SDLK_m:
+                minion1List += [Minion1(0)]
+                minion1List += [Minion1(1)]
+                minion1List += [Minion1(2)]
+                minion1List += [Minion1(3)]
+            if event.key == SDLK_n:
+                minion2List += [Minion2()]
             if event.key == SDLK_v:
                 for boss in bossList:
-                    boss.getaaHP()
+                    boss.Kill()
 
             # key down
 
@@ -582,7 +748,7 @@ def handle_events():
             # key up
         # command Locate
 def update():
-    delay(0.04)
+    delay(0.0395)
     stage.update()
     player.update()
     for bullet in bulletList:
@@ -590,20 +756,45 @@ def update():
         if bullet.getX() > 1024+130:
             bulletList.remove(bullet)
     #print(len(bulletList))
-    for item in itemList:
-        item.update()
-        if item.getLiveTime() < 0:
-            itemList.remove(item)
+    for coin in coinList:
+        coin.update()
+        if coin.getLiveTime() < 0:
+            coinList.remove(coin)
+    for powerUp in powerUpList:
+        powerUp.update()
+        if powerUp.getLiveTime() < 0:
+            powerUpList.remove(powerUp)
+    for boomUp in boomUpList:
+        boomUp.update()
+        if boomUp.getLiveTime() < 0:
+            boomUpList.remove(boomUp)
     for boom in boomList:
         boom.update()
         if boom.getLimitTime() < 0:
             boomList.remove(boom)
-    print(len(bossList))
+    #print(len(bossList))
     for boss in bossList:
         boss.update(player.getPoint())
+        #print(boss.getState())
+        #print(boss.getHP())
         if boss.getPoint()[1] <= -200 and boss.getHP() <= 0:
             bossList.remove(boss)
     #print(len(itemList))
+    for minion1 in minion1List:
+        minion1.update()
+        if minion1.getPoint()[0] > 1080:
+            minion1List.remove(minion1)
+        elif minion1.getState() == 1:
+            #위치값을 받아와서 effact 실행
+            minion1List.remove(minion1)
+            pass#
+        if minion1.shotTiming() < 0:
+            pass#적 총알 생성
+    for minion2 in minion2List:
+        minion2.update()
+        if minion2.getPoint()[1] < -100:
+            minion2List.remove(minion2)
+
 
 def draw():
     clear_canvas()
@@ -613,8 +804,16 @@ def draw():
         boss.render()
     for bullet in bulletList:
         bullet.render()
-    for item in itemList:
-        item.render()
+    for coin in coinList:
+        coin.render()
+    for powerUp in powerUpList:
+        powerUp.render()
+    for boomUp in boomUpList:
+        boomUp.render()
     for boom in boomList:
         boom.render()
+    for minion1 in minion1List:
+        minion1.render()
+    for minion2 in minion2List:
+        minion2.render()
     update_canvas()
