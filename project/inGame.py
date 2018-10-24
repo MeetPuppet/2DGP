@@ -140,54 +140,48 @@ class Kirby:
 
     pass
 
-class kirbyBullet:
-    class status(enum.Enum):
-        NOMAL = 0
-        HARD = 1
-        MAX = 2
-    def __init__(self, point, power):
+class kirbyBullet1:
+    image = None
+    def __init__(self, point):
         self.x, self.y = point[0], point[1]
-        self.size = power;
-        self.frame=random.randint(0,8)
-        if self.size == 0:
-            self.damage = 1
-            self.image = load_image('image/kirby/kirbyBullet.png')
-        elif self.size == 1:
-            self.damage = 4
-            self.image = load_image('image/kirby/kirbyBullet2.png')
-        elif self.size == 2:
-            self.damage = 10
-            self.image = load_image('image/kirby/maxBullet.png')
-        else:
-            self.damage = 5
-            self.image = load_image('image/kirby/StarBullet.png')
+        self.size = power
+        self.damage = 1
+        self.frame=0
+        if kirbyBullet1.image == None:
+            kirbyBullet1.image = load_image('image/kirby/kirbyBullet.png')
         pass
     def update(self):
-        if self.size == 0:
-            self.x += 35
-            self.frame= (self.frame+1)%3
-        elif self.size == 1:
-            self.x += 50
-            self.frame= (self.frame+1)%6
-        elif self.size == 2:
-            self.x += 70
-            self.frame= (self.frame+1)%6
-        else:
-            self.x += 50
-            self.frame= (self.frame+1)%8
+        self.x += 35
+        self.frame= (self.frame+1)%3
 
 
 
         pass
     def render(self):
-        if self.size == 0:
-            self.image.clip_draw(self.frame*72,0,72,10,self.x,self.y)
-        elif self.size == 1:
-            self.image.clip_draw(self.frame*126,0,126,48,self.x,self.y)
-        elif self.size == 2:
-            self.image.clip_draw(self.frame*232,0,232,150,self.x,self.y)
-        else:
-            self.image.clip_draw(self.frame*30,0,30,30,self.x,self.y)
+        self.image.clip_draw(self.frame*72,0,72,10,self.x,self.y)
+        pass
+
+
+    def getX(self): return self.x
+    def getKind(self): return self.size
+    def getDamage(self): return self.damage
+    pass
+class kirbyBullet2:
+    image = None
+    def __init__(self, point):
+        self.x, self.y = point[0], point[1]
+        self.size = 1;
+        self.damage = 4
+        self.frame=0
+        if kirbyBullet2.image == None:
+            kirbyBullet2.image = load_image('image/kirby/kirbyBullet2.png')
+        pass
+    def update(self):
+        self.x += 50
+        self.frame= (self.frame+1)%6
+        pass
+    def render(self):
+        self.image.clip_draw(self.frame*126,0,126,48,self.x,self.y)
         pass
 
 
@@ -196,6 +190,56 @@ class kirbyBullet:
     def getDamage(self): return self.damage
     pass
 
+class maxBullet:
+    image = None
+    def __init__(self, point):
+        self.x, self.y = point[0], point[1]
+        self.size = 2
+        self.frame=0
+        self.damage = 10
+        if maxBullet.image == None:
+            maxBullet.image = load_image('image/kirby/maxBullet.png')
+        pass
+    def update(self):
+        self.x += 70
+        self.frame= (self.frame+1)%6
+
+
+
+        pass
+    def render(self):
+        self.image.clip_draw(self.frame*232,0,232,150,self.x,self.y)
+        pass
+
+
+    def getX(self): return self.x
+    def getKind(self): return self.size
+    def getDamage(self): return self.damage
+    pass
+
+class starBullet:
+    image = None
+    def __init__(self, point):
+        self.x, self.y = point[0], point[1]
+        self.damage = 5
+        self.size = 1
+        self.frame=random.randint(0,8)
+        if starBullet.image == None:
+            starBullet.image = load_image('image/kirby/StarBullet.png')
+        pass
+    def update(self):
+        self.x += 50
+        self.frame= (self.frame+1)%8
+        pass
+    def render(self):
+        self.image.clip_draw(self.frame*30,0,30,30,self.x,self.y)
+        pass
+
+
+    def getX(self): return self.x
+    def getKind(self): return self.size
+    def getDamage(self): return self.damage
+    pass
 class kirbyBoom:
     class status(enum.Enum):
         READY = 0
@@ -366,8 +410,8 @@ class Minion1:
             self.x, self.y = 1074, 300
             pass
 
-        if self.image == None:
-            self.image = load_image("image/minion/scarfy.png")
+        if Minion1.image == None:
+            Minion1.image = load_image("image/minion/scarfy.png")
             pass
         pass
     def update(self):
@@ -419,8 +463,8 @@ class Minion2:
         self.jumpPower = random.randint(20,28)
         self.isDead = 0
         self.frame = 0
-        if self.image == None:
-            self.image = load_image("image/minion/cirkyble.png")
+        if Minion2.image == None:
+            Minion2.image = load_image("image/minion/cirkyble.png")
             pass
         pass
     def update(self):
@@ -452,8 +496,8 @@ class Coin:
         self.angle = random.randint(-6,6)
         self.frame=0
         self.liveTime=5.0
-        if self.image == None:
-            self.image = load_image("image/item/coin.png");
+        if Coin.image == None:
+            Coin.image = load_image("image/item/coin.png");
             pass
         pass
     def update(self):
@@ -490,8 +534,8 @@ class PowerUp:
         self.angle = random.randint(-6, 6)
         self.frame = 0
         self.liveTime = 5.0
-        if self.image == None:
-            self.image = load_image("image/item/PowerUp.png");
+        if PowerUp.image == None:
+            PowerUp.image = load_image("image/item/PowerUp.png");
             pass
         pass
 
@@ -530,8 +574,8 @@ class BoomUp:
         self.angle = random.randint(-6,6)
         self.frame = 0
         self.liveTime=5.0
-        if self.image == None:
-            self.image = load_image("image/item/Boom.png");
+        if BoomUp.image == None:
+            BoomUp.image = load_image("image/item/Boom.png");
             pass
         pass
     def update(self):
@@ -700,7 +744,7 @@ def handle_events():
             if event.key == SDLK_z:
                 player.isCharge(True)
                 # nomalBullet
-                bulletList+=[kirbyBullet(player.getPoint(),0)]
+                bulletList+=[kirbyBullet1(player.getPoint())]
             if event.key == SDLK_x:
                 player.setBoom(-1)
                 boomList+=[kirbyBoom(player.getPoint())]
@@ -736,11 +780,11 @@ def handle_events():
                 if player.getState() == kirbyStatus.READY:
                     if player.getCount() >= 35:
                         # charge Shot
-                        bulletList+=[kirbyBullet(player.getPoint(),2)]
+                        bulletList+=[maxBullet(player.getPoint())]
                         player.setState(kirbyStatus.SHOT)
                     else:
                         # nomalBullet
-                        bulletList+=[kirbyBullet(player.getPoint(),1)]
+                        bulletList+=[kirbyBullet2(player.getPoint())]
                         player.setState(kirbyStatus.IDLE)
                     player.setFrameYZero()
                 player.resetCount()

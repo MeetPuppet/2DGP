@@ -24,7 +24,7 @@ next_state_table = {
 
 
 
-
+#관련있는 함수를 모으기 위해여 @staticmethod를 사용
 
 class Boy:
 
@@ -41,7 +41,7 @@ class Boy:
 
     # IDLE state functions
     def enter_IDLE(self):
-        self.timer = 1000
+        self.timer = 100
         self.frame = 0
 
     def exit_IDLE(self):
@@ -51,7 +51,7 @@ class Boy:
         self.frame = (self.frame+1)%8
         self.timer -= 1
         if self.timer == 0:
-            #self.add_event(SLEEP_TIMER)
+            self.add_event(SLEEP)
             pass
         pass
 
