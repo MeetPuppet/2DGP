@@ -20,8 +20,8 @@ class Scarfy:
             self.x, self.y = 1074, 300
             pass
 
-        if scarfy.image == None:
-            scarfy.image = load_image("image/minion/scarfy.png")
+        if Scarfy.image == None:
+            Scarfy.image = load_image("image/minion/scarfy.png")
             pass
         pass
     def update(self):

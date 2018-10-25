@@ -1,5 +1,6 @@
 from pico2d import *
 
+
 class Batafire:
     IDLE = None
     def __init__(self):

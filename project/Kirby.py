@@ -73,13 +73,13 @@ class Kirby:
             elif key_event == LEFT_KEY_UP:
                 self.dirX += 1
 
+            #set in bulletManager
             if key_event == Z_KEY_DOWN:
-                self.dirX += 1
+                pass
             elif key_event == Z_KEY_UP:
-                self.dirX -= 1
-
+                pass
             if key_event == X_KEY_DOWN:
-                self.dirX += 1
+                pass
 
         pass
 

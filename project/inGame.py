@@ -22,8 +22,13 @@ from boss import Batafire
 from minions import Scarfy
 from minions import SirKibble
 
+from enemyBullets import enemyBullet
+from enemyBullets import Fireball
+from enemyBullets import SirKibbleCutter
+
 #kirby state
 IDLE, READY, SHOT, DEAD = range(4)
+
 
 name = 'inGame'
 
@@ -40,8 +45,10 @@ boomList = []
 
 minion1List = []
 minion2List = []
-
 bossList = []
+
+enemyBulletList = []
+
 count = 0
 
 
@@ -56,14 +63,6 @@ class UI:#maybe unused
         self.a=0
     pass
 
-class enemyBullet:
-    def __init__(self):
-        pass
-    def update(self):
-        pass
-    def render(self):
-        pass
-    pass
 
 
 def enter():
@@ -90,16 +89,19 @@ def resume():
 
 def handle_events():
     global player
-    global bossList
     global bulletList
+    #deadLine
+    global bossList
     global coinList
     global powerUpList
     global boomUpList
     global boomList
     global minion1List
     global minion2List
+    global enemyBulletList
     events = get_events()
     for event in events:
+        player.handle_events(event)
         if event.type == SDL_QUIT:
             game_framework.quit()
         # command Locate
@@ -113,15 +115,6 @@ def handle_events():
                 powerUpList += [PowerUp((400,300))]
             if event.key == SDLK_2:
                 boomUpList += [BoomUp((400,300))]
-
-            if event.key == SDLK_RIGHT:
-                player.setDirectX(1)
-            elif event.key == SDLK_LEFT:
-                player.setDirectX(-1)
-            if event.key == SDLK_UP:
-                player.setDirectY(1)
-            elif event.key == SDLK_DOWN:
-                player.setDirectY(-1)
 
             if event.key == SDLK_z:
                 player.isCharge(True)
@@ -144,19 +137,13 @@ def handle_events():
             if event.key == SDLK_v:
                 for boss in bossList:
                     boss.Kill()
+            if event.key == SDLK_q:
+                enemyBulletList += [SirKibbleCutter((512,384))]
 
             # key down
 
             # key up
         if event.type == SDL_KEYUP:
-            if event.key == SDLK_RIGHT:
-                player.setDirectX(-1)
-            elif event.key == SDLK_LEFT:
-                player.setDirectX(1)
-            if event.key == SDLK_UP:
-                player.setDirectY(-1)
-            elif event.key == SDLK_DOWN:
-                player.setDirectY(1)
 
             if event.key == SDLK_z:
                 if player.getState() == READY:
@@ -177,10 +164,15 @@ def update():
     delay(0.0395)
     stage.update()
     player.update()
+    print(player.getPoint())
     for bullet in bulletList:
         bullet.update()
         if bullet.getX() > 1024+130:
             bulletList.remove(bullet)
+    for EBullet in enemyBulletList:
+        EBullet.update()
+        #if EBullet.bulletRemoverChecker:
+            #enemyBulletList.remove(EBullet)
     #print(len(bulletList))
     for coin in coinList:
         coin.update()
@@ -230,6 +222,8 @@ def draw():
         boss.render()
     for bullet in bulletList:
         bullet.render()
+    for EBullet in enemyBulletList:
+        EBullet.render()
     for coin in coinList:
         coin.render()
     for powerUp in powerUpList:

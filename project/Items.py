@@ -1,5 +1,6 @@
 from pico2d import *
 import random
+import math
 
 class Coin:
     image = None
@@ -21,7 +22,7 @@ class Coin:
         elif self.x > 1024 :
             self.x = 1024-10
 
-        self.y+=math.sin(self.angle)*self.dirY
+        self.y+= -math.sin(self.angle)*self.dirY
         if(self.y>768-10 or self.y<0+10):
             self.dirY = self.dirY*(-1)
 
@@ -43,8 +44,8 @@ class PowerUp:
 
     def __init__(self, point):
         self.x, self.y = point[0], point[1]
-        self.dirX, self.dirY = -12, 9
-        self.angle = random.randint(-6, 6)
+        self.dirX, self.dirY = 12, 9
+        self.angle = random.randint(-6,6)
         self.frame = 0
         self.liveTime = 5.0
         if PowerUp.image == None:
@@ -60,7 +61,7 @@ class PowerUp:
         elif self.x > 1024:
             self.x = 1024 - 10
 
-        self.y += math.sin(self.angle) * self.dirY
+        self.y += -math.sin(self.angle) * self.dirY
         if (self.y > 768 - 10 or self.y < 0 + 10):
             self.dirY = self.dirY * (-1)
 
@@ -100,7 +101,7 @@ class BoomUp:
         elif self.x > 1024 :
             self.x = 1024-10
 
-        self.y+=math.sin(self.angle)*self.dirY
+        self.y+= -math.sin(self.angle)*self.dirY
         if(self.y>768-10 or self.y<0+10):
             self.dirY = self.dirY*(-1)
 
