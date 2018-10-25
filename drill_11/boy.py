@@ -4,7 +4,7 @@ from ball import Ball
 import game_world
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, RIGHT_SHIFT, LEFT_SHIFT = range(8)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, RIGHT_SHIFT, LEFT_SHIFT, DASH_TIMER = range(9)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -123,7 +123,7 @@ class DashState:
         boy.x += boy.velocity*2
         boy.x = clamp(25, boy.x, 1600 - 25)
         if boy.timer == 0:
-            boy.add_event(RIGHT_SHIFT)
+            boy.add_event(DASH_TIMER)
     @staticmethod
     def draw(boy):
         if boy.velocity == 1:
@@ -168,9 +168,9 @@ next_state_table = {
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
                SPACE: RunState, RIGHT_SHIFT: DashState, LEFT_SHIFT: DashState},
     DashState:{RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
-               },
-    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState,
-                 LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
+              SPACE: RunState, RIGHT_SHIFT: DashState, LEFT_SHIFT: DashState},
+    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState,
+                 SPACE: IdleState}
 }
 
 class Boy:
