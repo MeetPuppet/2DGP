@@ -1,6 +1,6 @@
 from pico2d import *
 import random
-
+import game_world
 
 class Scarfy:
     image =None
@@ -49,6 +49,8 @@ class Scarfy:
             elif self.jumpPower < -10:
                 self.gravity*=-1
 
+        if self.x > 1074 or self.x < -50:
+            game_world.remove_object2(self, 2)
             pass
         pass
     def render(self):
@@ -83,6 +85,8 @@ class SirKibble:
                 self.frame = (self.frame + 1) % 3
         self.y = self.y+self.jumpPower
         self.jumpPower-=0.5
+        if self.y < 0 and self.frame == 3:
+            game_world.remove_object2(self, 2)
         pass
     def render(self):
         self.image.clip_draw(self.frame*72,0,72,72,self.x,self.y)

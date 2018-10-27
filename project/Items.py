@@ -1,10 +1,11 @@
 from pico2d import *
+import game_world
 import random
 import math
 
 class Coin:
     image = None
-    def __init__(self, point):
+    def __init__(self, point = (2000,2000)):
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
         self.angle = random.randint(-6,6)
@@ -27,6 +28,9 @@ class Coin:
             self.dirY = self.dirY*(-1)
 
         self.liveTime-=0.01
+
+        if self.liveTime < 0:
+            game_world.remove_object2(self, 3)
         pass
     def render(self):
         if self.liveTime < 2 and self.frame%3==0:
@@ -42,14 +46,14 @@ class Coin:
 class PowerUp:
     image = None
 
-    def __init__(self, point):
+    def __init__(self, point= (2000,2000)):
         self.x, self.y = point[0], point[1]
         self.dirX, self.dirY = 12, 9
         self.angle = random.randint(-6,6)
         self.frame = 0
         self.liveTime = 5.0
         if PowerUp.image == None:
-            PowerUp.image = load_image("image/item/PowerUp.png");
+            PowerUp.image = load_image("image/item/PowerUp.png")
             pass
         pass
 
@@ -66,6 +70,8 @@ class PowerUp:
             self.dirY = self.dirY * (-1)
 
         self.liveTime -= 0.01
+        if self.liveTime < 0:
+            game_world.remove_object2(self, 3)
         pass
 
     def render(self):
@@ -82,7 +88,7 @@ class PowerUp:
 
 class BoomUp:
     image = None
-    def __init__(self, point):
+    def __init__(self, point = (2000,2000)):
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
         self.angle = random.randint(-6,6)

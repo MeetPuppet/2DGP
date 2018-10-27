@@ -1,5 +1,7 @@
 from pico2d import *
 import game_framework
+import game_world
+
 import enum
 import random
 import math
@@ -26,30 +28,43 @@ from enemyBullets import enemyBullet
 from enemyBullets import Fireball
 from enemyBullets import SirKibbleCutter
 
-#kirby state
-IDLE, READY, SHOT, DEAD = range(4)
+#phase Range
+ONE, TWO, THREE, BOSS = range(4)
 
+#debug
+NUM_ONE, NUM_TWO, NUM_THREE, NUM_FOUR,NUM_FIVE = range(5)
+
+key_event_table = {
+    (SDL_KEYDOWN, SDLK_1): NUM_ONE,
+    (SDL_KEYDOWN, SDLK_2): NUM_TWO,
+    (SDL_KEYDOWN, SDLK_3): NUM_THREE,
+    (SDL_KEYDOWN, SDLK_4): NUM_FOUR,
+    (SDL_KEYDOWN, SDLK_5): NUM_FIVE,
+}
 
 name = 'inGame'
 
 running = True
 player = None
 stage = None
-bulletList = []
 
-coinList = []
-powerUpList = []
-boomUpList = []
+coins = None
+powerUp = None
+boomUp = None
 
-boomList = []
+bullet1 = None
+bullet2 = None
+bulletMax = None
+star = None
+boom =None
 
-minion1List = []
-minion2List = []
-bossList = []
+minion1 = None
+minion2 = None
+boss1 = None
 
-enemyBulletList = []
-
-count = 0
+EBullet = None
+fireball = None
+Cutter = None
 
 
 class UI:#maybe unused
@@ -66,16 +81,35 @@ class UI:#maybe unused
 
 
 def enter():
-    global player
-    global stage
+    global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp
+    global minion1, minion2, boss1, EBullet, fireball, Cutter
     player = Kirby()
     stage = Stage(0)
+    bullet1 = kirbyBullet1()
+    bullet2 = kirbyBullet2()
+    bulletMax = maxBullet()
+    star = starBullet()
+    boom = kirbyBoom()
+
+    coins = Coin()
+    powerUp = PowerUp((1024//2, 768//2))
+    boomUp = BoomUp()
+
+    minion1 = [Scarfy(0),Scarfy(1),Scarfy(2),Scarfy(3)]
+    minion2 = SirKibble()
+    boss1 = Batafire()
+
+    EBullet = enemyBullet((1024//2, 768//2),player.getPoint())
+    fireball = Fireball((1024//2, 768//2),player.getPoint())
+    Cutter = SirKibbleCutter((1024//2, 768//2))
+
+    game_world.add_object(stage, 0)
+    game_world.add_object(player, 1)
     pass
 
 
 def exit():
-    global player
-    del(player)
+    game_world.clear()
     pass
 
 
@@ -87,153 +121,45 @@ def resume():
     pass
 
 
+
+
 def handle_events():
-    global player
-    global bulletList
-    #deadLine
-    global bossList
-    global coinList
-    global powerUpList
-    global boomUpList
-    global boomList
-    global minion1List
-    global minion2List
-    global enemyBulletList
     events = get_events()
     for event in events:
-        player.handle_events(event)
         if event.type == SDL_QUIT:
             game_framework.quit()
-        # command Locate
-            # key down
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
-                game_framework.quit()
-            if event.key == SDLK_0:
-                coinList += [Coin((400,300))]
-            if event.key == SDLK_1:
-                powerUpList += [PowerUp((400,300))]
-            if event.key == SDLK_2:
-                boomUpList += [BoomUp((400,300))]
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.quit()
+        else:
+            player.handle_event(event)
 
-            if event.key == SDLK_z:
-                player.isCharge(True)
-                # nomalBullet
-                bulletList+=[kirbyBullet1(player.getPoint())]
-            if event.key == SDLK_x:
-                player.setBoom(-1)
-                boomList+=[kirbyBoom(player.getPoint())]
-                # useBoom
+        if event.type == SDL_KEYDOWN and event.key == SDLK_1:
+            game_world.add_object(PowerUp((1024//2, 768//2)), 3)
+            pass
+        if event.type == SDL_KEYDOWN and event.key == SDLK_2:
+            game_world.add_object(Scarfy(0), 2)
+            game_world.add_object(Scarfy(1), 2)
+            game_world.add_object(Scarfy(2), 2)
+            game_world.add_object(Scarfy(3), 2)
+            pass
+        if event.type == SDL_KEYDOWN and event.key == SDLK_3:
+            game_world.add_object(SirKibble(), 2)
+            pass
+        if event.type == SDL_KEYDOWN and event.key == SDLK_4:
+            game_world.add_object(Batafire(), 2)
+            pass
+        if (event.type, event.key) ==NUM_FIVE:
+            pass
 
-            if event.key == SDLK_b:
-                bossList += [Batafire()]
-            if event.key == SDLK_m:
-                minion1List += [Scarfy(0)]
-                minion1List += [Scarfy(1)]
-                minion1List += [Scarfy(2)]
-                minion1List += [Scarfy(3)]
-            if event.key == SDLK_n:
-                minion2List += [SirKibble()]
-            if event.key == SDLK_v:
-                for boss in bossList:
-                    boss.Kill()
-            if event.key == SDLK_q:
-                enemyBulletList += [SirKibbleCutter((512,384))]
 
-            # key down
-
-            # key up
-        if event.type == SDL_KEYUP:
-
-            if event.key == SDLK_z:
-                if player.getState() == READY:
-                    if player.getCount() >= 35:
-                        # charge Shot
-                        bulletList+=[maxBullet(player.getPoint())]
-                        player.setState(SHOT)
-                    else:
-                        # nomalBullet
-                        bulletList+=[kirbyBullet2(player.getPoint())]
-                        player.setState(IDLE)
-                    player.setFrameYZero()
-                player.resetCount()
-                player.isCharge(False)
-            # key up
-        # command Locate
 def update():
-    delay(0.0395)
-    stage.update()
-    player.update()
-    print(player.getPoint())
-    for bullet in bulletList:
-        bullet.update()
-        if bullet.getX() > 1024+130:
-            bulletList.remove(bullet)
-    for EBullet in enemyBulletList:
-        EBullet.update()
-        #if EBullet.bulletRemoverChecker:
-            #enemyBulletList.remove(EBullet)
-    #print(len(bulletList))
-    for coin in coinList:
-        coin.update()
-        if coin.getLiveTime() < 0:
-            coinList.remove(coin)
-    for powerUp in powerUpList:
-        powerUp.update()
-        if powerUp.getLiveTime() < 0:
-            powerUpList.remove(powerUp)
-    for boomUp in boomUpList:
-        boomUp.update()
-        if boomUp.getLiveTime() < 0:
-            boomUpList.remove(boomUp)
-    for boom in boomList:
-        boom.update()
-        if boom.getLimitTime() < 0:
-            boomList.remove(boom)
-    #print(len(bossList))
-    for boss in bossList:
-        boss.update(player.getPoint())
-        #print(boss.getState())
-        #print(boss.getHP())
-        if boss.getPoint()[1] <= -200 and boss.getHP() <= 0:
-            bossList.remove(boss)
-    #print(len(itemList))
-    for minion1 in minion1List:
-        minion1.update()
-        if minion1.getPoint()[0] > 1080:
-            minion1List.remove(minion1)
-        elif minion1.getState() == 1:
-            #위치값을 받아와서 effact 실행
-            minion1List.remove(minion1)
-            pass#
-        if minion1.shotTiming() < 0:
-            pass#적 총알 생성
-    for minion2 in minion2List:
-        minion2.update()
-        if minion2.getPoint()[1] < -100:
-            minion2List.remove(minion2)
+    for game_object in game_world.all_objects():
+        game_object.update()
+    delay(0.038)
 
 
 def draw():
     clear_canvas()
-    stage.render()
-    player.render()
-    for boss in bossList:
-        boss.render()
-    for bullet in bulletList:
-        bullet.render()
-    for EBullet in enemyBulletList:
-        EBullet.render()
-    for coin in coinList:
-        coin.render()
-    for powerUp in powerUpList:
-        powerUp.render()
-    for boomUp in boomUpList:
-        boomUp.render()
-    for boom in boomList:
-        boom.render()
-    for minion1 in minion1List:
-        minion1.render()
-    for minion2 in minion2List:
-        minion2.render()
+    for game_object in game_world.all_objects():
+        game_object.render()
     update_canvas()

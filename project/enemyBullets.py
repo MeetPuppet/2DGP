@@ -1,7 +1,7 @@
 from pico2d import *
 
 import math
-
+import game_world
 def getDistance(startPoint, endPoint):
     Xdistance = startPoint[0] - endPoint[0]
     Ydistance = startPoint[1] - endPoint[1]
@@ -39,6 +39,9 @@ class enemyBullet:
         self.x += math.cos(self.angle) * self.dir
 
         self.y += -math.sin(self.angle) * self.dir
+
+        if self.x > getDistance(self.start,(self.x,self.y)):
+            game_world.remove_object2(self,6)
         pass
     def render(self):
         self.image.draw(self.x, self.y)
@@ -63,6 +66,8 @@ class SirKibbleCutter:
     def update(self):
         self.frame = (self.frame + 3)%4
         self.x -= self.dir
+        if self.x > -20:
+            game_world.remove_object2(self,6)
 
     def render(self):
         self.image.clip_draw(self.frame*69,0,69,48,self.x,self.y)
@@ -92,6 +97,9 @@ class Fireball:
         self.x += math.cos(self.angle) * self.dir
 
         self.y += -math.sin(self.angle) * self.dir
+
+        if self.x > getDistance(self.start,(self.x,self.y)):
+            game_world.remove_object2(self,6)
         pass
     def render(self):
         self.image.clip_draw(self.frame*72,0,72,72,self.x,self.y)

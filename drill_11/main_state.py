@@ -49,6 +49,7 @@ def handle_events():
 
 
 def update():
+    delay(0.038)
     for game_object in game_world.all_objects():
         game_object.update()
 

@@ -1,8 +1,9 @@
 from pico2d import *
+import game_world
 
 class kirbyBullet1:
     image = None
-    def __init__(self, point):
+    def __init__(self, point  = (2000,2000)):
         self.x, self.y = point[0], point[1]
         self.size = 0
         self.damage = 1
@@ -13,6 +14,8 @@ class kirbyBullet1:
     def update(self):
         self.x += 35
         self.frame= (self.frame+1)%3
+        if self.x > 1074:
+            game_world.remove_object2(self, 4)
 
 
 
@@ -28,7 +31,7 @@ class kirbyBullet1:
     pass
 class kirbyBullet2:
     image = None
-    def __init__(self, point):
+    def __init__(self, point  = (2000,2000)):
         self.x, self.y = point[0], point[1]
         self.size = 1
         self.damage = 4
@@ -39,6 +42,8 @@ class kirbyBullet2:
     def update(self):
         self.x += 50
         self.frame= (self.frame+1)%6
+        if self.x > 1074:
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(self.frame*126,0,126,48,self.x,self.y)
@@ -52,7 +57,7 @@ class kirbyBullet2:
 
 class maxBullet:
     image = None
-    def __init__(self, point):
+    def __init__(self, point  = (2000,2000)):
         self.x, self.y = point[0], point[1]
         self.size = 2
         self.frame=0
@@ -63,6 +68,8 @@ class maxBullet:
     def update(self):
         self.x += 70
         self.frame= (self.frame+1)%6
+        if self.x > 1074:
+            game_world.remove_object2(self, 4)
 
 
 
@@ -79,7 +86,7 @@ class maxBullet:
 
 class starBullet:
     image = None
-    def __init__(self, point):
+    def __init__(self, point  = (2000,2000)):
         self.x, self.y = point[0], point[1]
         self.damage = 5
         self.size = 1
@@ -90,6 +97,8 @@ class starBullet:
     def update(self):
         self.x += 50
         self.frame= (self.frame+1)%8
+        if self.x > 1074:
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(self.frame*30,0,30,30,self.x,self.y)
@@ -102,7 +111,7 @@ class starBullet:
     pass
 
 class kirbyBoom:
-    def __init__(self,point):
+    def __init__(self,point  = (2000,2000)):
         self.x, self.y = point[0],point[1]
         self.activated = False
         self.limit = 1.0
@@ -120,6 +129,8 @@ class kirbyBoom:
             self.x+=4
         else:
             self.x+=2
+        if self.limit < 0:
+            game_world.remove_object2(self, 5)
         pass
     def render(self):
         if self.activated == False:

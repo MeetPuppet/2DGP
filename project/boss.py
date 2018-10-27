@@ -1,42 +1,65 @@
 from pico2d import *
-
-
+import game_world
+import random
 class Batafire:
     IDLE = None
+    READY = None
+    FIRE = None
+    CHARGE = None
+    DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
         self.maxHP, self.HP = 500, 500
         self.frame = 0
         self.state = 0
         self.guarding = 0
-        self.wait = 120
+        self.wait = 180
+        self.backMove = False
+        self.UpMove = False
         self.falling = 5
         #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
-        self.IDLE = load_image("image/boss/batafireIDLE.png")
-        self.READY = load_image("image/boss/batafireReady.png")
-        self.FIRE = load_image("image/boss/batafireFire.png")
-        self.CHARGE = load_image("image/boss/batafireCharge.png")
-        self.DEAD = load_image("image/boss/batafireDead.png")
+        if Batafire.IDLE == None:
+            Batafire.IDLE = load_image("image/boss/batafireIDLE.png")
+        if Batafire.READY == None:
+            Batafire.READY = load_image("image/boss/batafireReady.png")
+        if Batafire.FIRE == None:
+            Batafire.FIRE = load_image("image/boss/batafireFire.png")
+        if Batafire.CHARGE == None:
+            Batafire.CHARGE = load_image("image/boss/batafireCharge.png")
+        if Batafire.DEAD == None:
+            Batafire.DEAD = load_image("image/boss/batafireDead.png")
+
         pass
-    def update(self,targetXY):
+    def update(self):
         if self.guarding > 0 : self.guarding -= 1
         if self.HP <= 0: self.state = 4
 
         if self.state == 0:
             self.frame = (self.frame + 1) % 10
 
-            if targetXY[0] < 550 and self.x > 879:
-                self.x-=8
-                pass
-            elif targetXY[0] >= 550 and self.x<1000:
+            if self.backMove == True:
                 self.x+=8
+            else:
+                self.x-=8
+            if self.x > 974:
+                if self.UpMove == True:
+                    self.y+=5
+                else:
+                    self.y-=5
 
-            if targetXY[1] > self.y - 20:
-                self.y+=5
+            if self.x < 612:
+                self.backMove = True
                 pass
-            elif targetXY[1] < self.y- 50:
-                self.y-=5
+            elif self.x > 974:
+                self.backMove = False
                 pass
+            if self.y > 718:
+                self.UpMove = False
+                pass
+            elif self.y < 100:
+                self.UpMove = True
+                pass
+
 
             self.wait -= 1
             if self.wait < 0:
@@ -47,7 +70,7 @@ class Batafire:
         elif self.state == 1:
             self.frame = self.frame + 1
             if self.frame == 3:
-                if targetXY[0] > 200:
+                if random.randint(0,1) == 0:
                     self.state = 2
                     self.wait = 30
                 else:
@@ -59,7 +82,7 @@ class Batafire:
             self.wait -= 1
             self.frame = (self.frame + 1) % 4
             if self.wait < 0:
-                self.wait = 120
+                self.wait = 180
                 self.frame = 0
                 self.state = 0
                 pass
@@ -69,7 +92,7 @@ class Batafire:
             if self.x > -300 :
                 self.x-=50
             else:
-                self.wait = 120
+                self.wait = 180
                 self.frame = 0
                 self.x = 1300
                 self.state = 0
@@ -84,6 +107,9 @@ class Batafire:
 
             if self.falling > -1 :
                 delay(0.1)
+
+            if self.y < -150:
+                game_world.remove_object2(self, 2)
 
             pass
         pass

@@ -1,13 +1,22 @@
 from pico2d import *
 
+from kirbyBullets import kirbyBullet1
+from kirbyBullets import kirbyBullet2
+from kirbyBullets import maxBullet
+from kirbyBullets import starBullet
+from kirbyBullets import kirbyBoom
+
+import game_world
+
 def WINSIZEX(): return 1024
 def WINSIZEY(): return 768
 
-IDLE, READY, SHOT, DEAD = range(4)
 
-RIGHT_KEY_DOWN, RIGHT_KEY_UP, LEFT_KEY_DOWN,  LEFT_KEY_UP,\
-UP_KEY_DOWN, UP_KEY_UP, DOWN_KEY_DOWN, DOWN_KEY_UP,\
-Z_KEY_DOWN, Z_KEY_UP, X_KEY_DOWN= range(11)
+UP_KEY_DOWN, UP_KEY_UP, DOWN_KEY_DOWN, DOWN_KEY_UP, \
+LEFT_KEY_DOWN, LEFT_KEY_UP, RIGHT_KEY_DOWN, RIGHT_KEY_UP,\
+Z_KEY_DOWN, Z_KEY_UP, X_KEY_DOWN, \
+CHARGE, BE_IDLE = range(13)
+
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_UP): UP_KEY_DOWN,
@@ -28,10 +37,291 @@ key_event_table = {
     (SDL_KEYDOWN, SDLK_x): X_KEY_DOWN,
 }
 
+class EventState:
+
+    @staticmethod
+    def enter(Kirby, event):
+        Kirby.isEvent = True
+        pass
+
+    @staticmethod
+    def exit(Kirby, event):
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        Kirby.frameX = (Kirby.frameX + 1) % 8
+        Kirby.x = Kirby.x + 5
+        if Kirby.x > 100:
+            Kirby.isEvent = False
+            Kirby.add_event(BE_IDLE)
+        # fill here
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.IDLE.clip_draw(Kirby.frameX*48,0,48,40,Kirby.x,Kirby.y)
+
+class IdleState:
+
+    @staticmethod
+    def enter(Kirby, event):
+        if event == UP_KEY_DOWN:
+            Kirby.dirY = 1
+        elif event == UP_KEY_UP and Kirby.dirY > 0:
+            Kirby.dirY = 0
+        elif event == DOWN_KEY_DOWN:
+            Kirby.dirY = -1
+        elif event == DOWN_KEY_UP and Kirby.dirY < 0:
+            Kirby.dirY = 0
+
+
+        if event == LEFT_KEY_DOWN:
+            Kirby.dirX = -1
+        elif event == LEFT_KEY_UP and Kirby.dirX < 0:
+            Kirby.dirX = 0
+        elif event == RIGHT_KEY_DOWN:
+            Kirby.dirX = 1
+        elif event == RIGHT_KEY_UP and Kirby.dirX > 0:
+            Kirby.dirX = 0
+
+
+    @staticmethod
+    def exit(Kirby, event):
+        if event == Z_KEY_DOWN:
+            Kirby.Bullet1()
+            Kirby.countOn = True
+        elif event == Z_KEY_UP:
+            Kirby.chargeCount = 0
+            Kirby.countOn = False
+            pass
+        if event == X_KEY_DOWN:
+            if Kirby.boom > 0:
+                Kirby.Boom()
+                Kirby.boom-=1
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        if Kirby.countOn == True:
+            Kirby.chargeCount += 1
+
+        if Kirby.chargeCount >= 10:
+            Kirby.add_event(CHARGE)
+
+        Kirby.frameX = (Kirby.frameX + 1) % 8
+        Kirby.x = Kirby.x + 15 * Kirby.dirX
+        if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
+            Kirby.x = Kirby.x - 15 * Kirby.dirX
+        Kirby.y = Kirby.y + 15 * Kirby.dirY
+        if Kirby.y > 768 - 24 or Kirby.y < 0 + 24:
+            Kirby.y = Kirby.y - 15 * Kirby.dirY
+        # fill here
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.IDLE.clip_draw(Kirby.frameX*48,0,48,40,Kirby.x,Kirby.y)
+
+class MoveState:
+
+    @staticmethod
+    def enter(Kirby, event):
+        if event == UP_KEY_DOWN:
+            Kirby.dirY = 1
+        elif event == UP_KEY_UP and Kirby.dirY > 0:
+            Kirby.dirY = 0
+        elif event == DOWN_KEY_DOWN:
+            Kirby.dirY = -1
+        elif event == DOWN_KEY_UP and Kirby.dirY < 0:
+            Kirby.dirY = 0
+
+
+        if event == LEFT_KEY_DOWN:
+            Kirby.dirX = -1
+        elif event == LEFT_KEY_UP and Kirby.dirX < 0:
+            Kirby.dirX = 0
+        elif event == RIGHT_KEY_DOWN:
+            Kirby.dirX = 1
+        elif event == RIGHT_KEY_UP and Kirby.dirX > 0:
+            Kirby.dirX = 0
+
+
+    @staticmethod
+    def exit(Kirby, event):
+        if event == Z_KEY_DOWN:
+            Kirby.Bullet1()
+            Kirby.countOn = True
+        elif event == Z_KEY_UP:
+            Kirby.chargeCount = 0
+            Kirby.countOn = False
+            pass
+
+        if event == X_KEY_DOWN:
+            if Kirby.boom > 0:
+                Kirby.Boom()
+                Kirby.boom-=1
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        if Kirby.countOn == True:
+            Kirby.chargeCount += 1
+
+        if Kirby.chargeCount >= 10:
+            Kirby.add_event(CHARGE)
+
+        Kirby.frameX = (Kirby.frameX + 1) % 8
+        Kirby.x = Kirby.x + 15 * Kirby.dirX
+        if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
+            Kirby.x = Kirby.x - 15 * Kirby.dirX
+        Kirby.y = Kirby.y + 15 * Kirby.dirY
+        if Kirby.y > 768 - 24 or Kirby.y < 0 + 24:
+            Kirby.y = Kirby.y - 15 * Kirby.dirY
+        # fill here
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.IDLE.clip_draw(Kirby.frameX*48,0,48,40,Kirby.x,Kirby.y)
+
+
+class ReadyState:
+
+    @staticmethod
+    def enter(Kirby, event):
+        if event == UP_KEY_DOWN:
+            Kirby.dirY = 1
+        elif event == UP_KEY_UP and Kirby.dirY > 0:
+            Kirby.dirY = 0
+        elif event == DOWN_KEY_DOWN:
+            Kirby.dirY = -1
+        elif event == DOWN_KEY_UP and Kirby.dirY < 0:
+            Kirby.dirY = 0
+
+
+        if event == LEFT_KEY_DOWN:
+            Kirby.dirX = -1
+        elif event == LEFT_KEY_UP and Kirby.dirX < 0:
+            Kirby.dirX = 0
+        elif event == RIGHT_KEY_DOWN:
+            Kirby.dirX = 1
+        elif event == RIGHT_KEY_UP and Kirby.dirX > 0:
+            Kirby.dirX = 0
+
+    @staticmethod
+    def exit(Kirby, event):
+        if event == Z_KEY_UP:
+            if Kirby.frameY == 1:
+                #level2
+                Kirby.Bullet2()
+                Kirby.countOn = False
+                Kirby.frameY = 0
+                Kirby.chargeCount = 0
+                pass
+            elif Kirby.frameY == 2:
+                #level3
+                Kirby.MaxBullet()
+                Kirby.countOn = False
+                Kirby.frameY = 0
+                Kirby.chargeCount = 0
+            else:
+                pass
+
+        if event == X_KEY_DOWN:
+            if Kirby.boom > 0:
+                Kirby.Boom()
+                Kirby.boom-=1
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        Kirby.frameX = (Kirby.frameX + 1) % 4
+        Kirby.chargeCount += 1
+
+        if Kirby.frameY == 0 and Kirby.frameX == 3:
+            Kirby.frameY = 1
+        elif Kirby.chargeCount >= 35:
+            Kirby.frameY = 2
+
+        if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
+            Kirby.x = Kirby.x - 15 * Kirby.dirX
+        else:
+            Kirby.x = Kirby.x + 15 * Kirby.dirX
+        if Kirby.y > 768 - 24 or Kirby.y < 0 + 24:
+            Kirby.y = Kirby.y - 15 * Kirby.dirY
+        else:
+            Kirby.y = Kirby.y + 15 * Kirby.dirY
+        # fill here
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.CHARGE.clip_draw(Kirby.frameX*64,Kirby.frameY*64,64,64,Kirby.x,Kirby.y)
+
+class ShotState:
+
+    @staticmethod
+    def enter(Kirby, event):
+        if Kirby.chargeCount < 35:
+             Kirby.chargeCount = 0
+             Kirby.add_event(BE_IDLE)
+        if event == RIGHT_KEY_DOWN:
+            Kirby.dirX += 1
+        elif event == LEFT_KEY_DOWN:
+            Kirby.dirX -= 1
+        elif event == RIGHT_KEY_UP:
+            Kirby.dirX -= 1
+        elif event == LEFT_KEY_UP:
+            Kirby.dirX += 1
+
+        if event == UP_KEY_DOWN:
+            Kirby.dirY += 1
+        elif event == DOWN_KEY_DOWN:
+            Kirby.dirY -= 1
+        elif event == UP_KEY_UP:
+            Kirby.dirY -= 1
+        elif event == DOWN_KEY_UP:
+            Kirby.dirY += 1
+
+    @staticmethod
+    def exit(Kirby, event):
+        if event == Z_KEY_DOWN:
+            #kirbyBullet
+            Kirby.Bullet1()
+            pass
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        Kirby.frameX = Kirby.frameX + 1
+        if Kirby.frameX == 8:
+            Kirby.frameX = 0
+            Kirby.add_event(BE_IDLE)
+        Kirby.x = Kirby.x + 15 * Kirby.dirX
+        if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
+            Kirby.x = Kirby.x - 15 * Kirby.dirX
+        Kirby.y = Kirby.y + 15 * Kirby.dirY
+        if Kirby.y > 768 - 24 or Kirby.y < 0 + 24:
+            Kirby.y = Kirby.y - 15 * Kirby.dirY
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.SHOT.clip_draw(Kirby.frameX*48,0,48,40,Kirby.x,Kirby.y)
+
+
 next_state_table = {
-    #필요 불분명함
-    #적용형식 불분명
-    #모든 상태변화는 내부의 chargeCount의 영향에서 옴
+    EventState: {UP_KEY_DOWN: EventState, UP_KEY_UP: EventState, DOWN_KEY_DOWN: EventState, DOWN_KEY_UP: EventState,
+                LEFT_KEY_DOWN: EventState, LEFT_KEY_UP: EventState,RIGHT_KEY_DOWN: EventState, RIGHT_KEY_UP: EventState,
+                Z_KEY_DOWN: EventState,Z_KEY_UP: EventState,X_KEY_DOWN: EventState, BE_IDLE: IdleState},
+
+    IdleState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
+                LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
+                Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, CHARGE: ReadyState},
+
+    MoveState: {UP_KEY_DOWN: IdleState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: IdleState, DOWN_KEY_UP: IdleState,
+                LEFT_KEY_DOWN: IdleState, LEFT_KEY_UP: IdleState, RIGHT_KEY_DOWN: IdleState, RIGHT_KEY_UP: IdleState,
+                Z_KEY_DOWN: MoveState, Z_KEY_UP: MoveState, X_KEY_DOWN: MoveState, CHARGE: ReadyState},
+
+    ReadyState: {UP_KEY_DOWN: ReadyState, UP_KEY_UP: ReadyState, DOWN_KEY_DOWN: ReadyState, DOWN_KEY_UP: ReadyState,
+                LEFT_KEY_DOWN: ReadyState, LEFT_KEY_UP: ReadyState,RIGHT_KEY_DOWN: ReadyState, RIGHT_KEY_UP: ReadyState,
+                Z_KEY_DOWN: ReadyState, Z_KEY_UP: IdleState, X_KEY_DOWN: ReadyState},
 }
 
 class Kirby:
@@ -45,108 +335,67 @@ class Kirby:
         self.maxHP = 5
         self.HP = 5
         self.boom = 2
-        self.state = IDLE
+        self.event_que = []
+        self.cur_state = EventState
+        self.cur_state.enter(self, None)
         self.IDLE = load_image('image/kirby/kirbyIDLE.png')
         self.CHARGE = load_image('image/kirby/chargeLevel.png')
         self.MAX = load_image('image/kirby/FullShot.png')
         #pass
 
-    def handle_events(self, event):
+    def add_event(self, event):
+        self.event_que.insert(0, event)
+
+    def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
-
-            if key_event == UP_KEY_DOWN:
-                self.dirY += 1
-            elif key_event == UP_KEY_UP:
-                self.dirY -= 1
-            elif key_event == DOWN_KEY_DOWN:
-                self.dirY -= 1
-            elif key_event == DOWN_KEY_UP:
-                self.dirY += 1
-
-            if key_event == RIGHT_KEY_DOWN:
-                self.dirX += 1
-            elif key_event == LEFT_KEY_DOWN:
-                self.dirX -= 1
-            elif key_event == RIGHT_KEY_UP:
-                self.dirX -= 1
-            elif key_event == LEFT_KEY_UP:
-                self.dirX += 1
-
-            #set in bulletManager
-            if key_event == Z_KEY_DOWN:
-                pass
-            elif key_event == Z_KEY_UP:
-                pass
-            if key_event == X_KEY_DOWN:
-                pass
-
-        pass
+            self.add_event(key_event)
 
     def update(self):
-        # frame control
-        if self.state == READY:
-            self.frameX = (self.frameX +1)%4
-        else:
-            self.frameX = (self.frameX +1)%8
-        # frame control
+        self.cur_state.do(self)
+        if len(self.event_que) > 0:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
+            if self.isEvent == False:
+                self.cur_state = next_state_table[self.cur_state][event]
+                self.cur_state.enter(self, event)
 
-        # status move
-        if self.state == IDLE:
-            if self.chargeCount >= 10:
-                self.state = READY
-            else:
-                self.state = IDLE
-        elif self.state == READY:
-            if self.chargeCount >= 10 and self.chargeCount < 30 and self.frameX == 3:
-                self.frameY = 1
-            elif self.chargeCount >= 35:
-                self.frameY = 2
-        elif self.state == SHOT:
-            if self.frameX == 7:
-                self.state = IDLE
-        elif self.state == DEAD:
-            #use Effect
-            pass
-        # status move
-
-        #print(self.chargeCount)
-
-        # event, can't move
-        if self.isEvent:
-            if self.state == IDLE:
-                self.x = self.x + 5
-                if(self.x>100):
-                    self.isEvent = False
-                return
-                pass
-            elif self.state == DEAD:
-                pass
-        # event, can't move
-
-        # move Locate
-        self.x = self.x + 10 * self.dirX
-        if self.x>1024-24 or self.x<0 + 24:
-            self.x = self.x - 15 * self.dirX
-        self.y = self.y + 10 * self.dirY
-        if self.y > 768 - 24 or self.y < 0 + 24:
-            self.y = self.y - 15 * self.dirY
-        if self.countOn == True:
-            self.chargeCount = self.chargeCount + 1
         if self.HP > self.maxHP:
             self.HP = self.maxHP
-        # move Locate
 
 
 
     def render(self):
-        if self.state == IDLE:
-            self.IDLE.clip_draw(self.frameX*48,0,48,40,self.x,self.y)
-        elif self.state == READY:
-            self.CHARGE.clip_draw(self.frameX*64,self.frameY*64,64,64,self.x,self.y)
-        elif self.state == SHOT:
-            self.MAX.clip_draw(self.frameX*120,0,120,80,self.x,self.y)
+        self.cur_state.draw(self)
         #pass
+
+    def Bullet1(self):
+        # fill here
+        bullet = kirbyBullet1((self.x, self.y))
+        game_world.add_object(bullet,4)
+        pass
+
+    def Bullet2(self):
+        # fill here
+        bullet = kirbyBullet2((self.x, self.y))
+        game_world.add_object(bullet,4)
+        pass
+
+    def MaxBullet(self):
+        # fill here
+        bullet = maxBullet((self.x, self.y))
+        game_world.add_object(bullet,4)
+        pass
+
+    def StarBullet(self):
+        # fill here
+        bullet = starBullet((self.x, self.y))
+        game_world.add_object(bullet,4)
+        pass
+
+    def Boom(self):
+        boom = kirbyBoom((self.x, self.y))
+        game_world.add_object(boom, 5)
 
     def getPoint(self): return (self.x,self.y)
 
@@ -157,10 +406,9 @@ class Kirby:
     def getBoom(self): return self.boom
     def setBoom(self,count): self.boom += count
 
-    def getState(self): return self.state
-    def setState(self, state): self.state = state
-
+    def getFrameY(self): return self.frameY
     def setFrameYZero(self): self.frameY=0
+
     def setDirectX(self, num): self.dirX += num
     def setDirectY(self, num): self.dirY += num
 
