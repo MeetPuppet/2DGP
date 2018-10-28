@@ -54,11 +54,20 @@ def intersectAtoB(objectA, AList, objectB, BList):
         for B in range(len(objects[BList])):
             distance = getDistance(objectA.getPoint(), objectB.getPoint())
             #object마다 object.getRadius()가 필요함
-            #hitRange = raidus1 + radius2
-            '''
-            하나가 지워지면 다른하나가 안지워질수 있음
-            반대로 둘다 지워질 수도 있음
-            '''
+            hitRange = objectA.getRadius() + objectB.getRadius()
+
+            if distance <= hitRange:
+                if AList == 1:
+                    # objects[AList].[BList]제거시발동함수
+                    #함수명 activate()로 통일시킬것
+                    objects[BList].remove(objectB)
+                else:
+                    objects[AList].remove(objectA)
+                    # objects[AList].[BList]제거시발동함수
+                    objects[BList].remove(objectB)
+
+                '''
+                '''
     pass
 
 def clear():
