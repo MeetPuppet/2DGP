@@ -1,7 +1,7 @@
 from pico2d import *
 
-import math
 import game_world
+import math
 def getDistance(startPoint, endPoint):
     Xdistance = startPoint[0] - endPoint[0]
     Ydistance = startPoint[1] - endPoint[1]
@@ -29,6 +29,7 @@ class enemyBullet:
     def __init__(self, startPoint, wayPoint):
         self.start = startPoint
         self.x, self.y = startPoint[0], startPoint[1]
+        self.radius = 12
         self.dir = 10
         self.wayPoint = wayPoint
         self.angle = getAngle(startPoint, wayPoint)
@@ -47,6 +48,7 @@ class enemyBullet:
         self.image.draw(self.x, self.y)
         pass
 
+    def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
@@ -58,6 +60,7 @@ class SirKibbleCutter:
     def __init__(self, startPoint):
         self.start = startPoint
         self.x, self.y = startPoint[0], startPoint[1]
+        self.radius = 24
         self.frame = 0
         self.dir = 25
         if SirKibbleCutter.image == None:
@@ -73,6 +76,7 @@ class SirKibbleCutter:
         self.image.clip_draw(self.frame*69,0,69,48,self.x,self.y)
         pass
 
+    def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
@@ -84,6 +88,7 @@ class Fireball:
     def __init__(self, startPoint, wayPoint):
         self.start = startPoint
         self.x, self.y = startPoint[0], startPoint[1]
+        self.radius = 36
         self.frame = 0
         self.dir = 15
         self.wayPoint = wayPoint
@@ -105,6 +110,7 @@ class Fireball:
         self.image.clip_draw(self.frame*72,0,72,72,self.x,self.y)
         pass
 
+    def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True

@@ -327,6 +327,7 @@ next_state_table = {
 class Kirby:
     def __init__(self):
         self.x, self.y =-10,WINSIZEY()//2
+        self.radius = 20
         self.dirX, self.dirY = 0, 0
         self.frameX, self.frameY = 0, 0
         self.chargeCount = 0
@@ -398,6 +399,7 @@ class Kirby:
         game_world.add_object(boom, 5)
 
     def getPoint(self): return (self.x,self.y)
+    def getRadius(self): return self.radius
 
     def getHP(self): return self.HP
     def heal(self): self.HP += 1

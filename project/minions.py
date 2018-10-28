@@ -7,6 +7,7 @@ class Scarfy:
     def __init__(self,moveNumber):
         self.pattern = moveNumber
         self.shotTime = 30
+        self.radius = 25
         self.isDead = 0
         self.isDown = 0
         self.jumpPower = 10
@@ -56,6 +57,8 @@ class Scarfy:
     def render(self):
         self.image.clip_draw(self.frame*50,0,50,50,self.x,self.y)
         pass
+
+    def getRadius(self): return self.radius
     def getPoint(self): return (self.x, self.y)
     def getState(self): return self.isDead
     def Kill(self): self.isDead = 1
@@ -69,6 +72,7 @@ class SirKibble:
     def __init__(self):
         self.x, self.y = random.randint(512,900), -100
         self.jumpPower = random.randint(20,28)
+        self.radius = 32
         self.isDead = 0
         self.frame = 0
         if SirKibble.image == None:
@@ -92,6 +96,7 @@ class SirKibble:
         self.image.clip_draw(self.frame*72,0,72,72,self.x,self.y)
         pass
 
+    def getRadius(self): return self.radius
     def getPoint(self): return (self.x, self.y)
     def getState(self): return self.isDead
     def Kill(self): self.isDead = 1

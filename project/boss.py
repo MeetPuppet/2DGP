@@ -10,6 +10,7 @@ class Batafire:
     def __init__(self):
         self.x, self.y = 1500,768//2
         self.maxHP, self.HP = 500, 500
+        self.radius = 150
         self.frame = 0
         self.state = 0
         self.guarding = 0
@@ -139,6 +140,7 @@ class Batafire:
         pass
 
     def getPoint(self): return (self.x, self.y)
+    def getRadius(self): return self.radius
     def getState(self): return self.state
     def getHP(self): return self.HP
     def Kill(self): self.HP = 0
