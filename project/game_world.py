@@ -60,6 +60,22 @@ def intersectAtoB(objectA, AList, objectB, BList):
                 if AList == 1:
                     # objects[AList].[BList]제거시발동함수
                     #함수명 activate()로 통일시킬것
+                    #3아이템
+                    if BList == 3:
+                        if objectB.getItemNum() == 0:
+                            objectA.getItemNum()
+                            pass
+                        elif objectB.getItemNum() == 1:
+                            objectA.getItemNum()
+                            pass
+                        elif objectB.getItemNum() == 2:
+                            objectA.setBoom(1)
+                            pass
+                    #2,6 적, 적총알
+                    if BList == 2 or BList == 6:
+                        #현재 보스포함 5종 있음
+                        pass
+                    pass
                     objects[BList].remove(objectB)
                 else:
                     objects[AList].remove(objectA)

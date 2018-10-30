@@ -9,6 +9,7 @@ class Coin:
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
         self.angle = random.randint(-6,6)
+        self.itemNum = 0
         self.frame=0
         self.liveTime=5.0
         if Coin.image == None:
@@ -41,6 +42,7 @@ class Coin:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime
 
 class PowerUp:
@@ -50,6 +52,7 @@ class PowerUp:
         self.x, self.y = point[0], point[1]
         self.dirX, self.dirY = 12, 9
         self.angle = random.randint(-6,6)
+        self.itemNum = 1
         self.frame = 0
         self.liveTime = 5.0
         if PowerUp.image == None:
@@ -84,6 +87,7 @@ class PowerUp:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime
 
 class BoomUp:
@@ -92,6 +96,7 @@ class BoomUp:
         self.x, self.y = point[0],point[1]
         self.dirX, self.dirY = -12,9
         self.angle = random.randint(-6,6)
+        self.itemNum = 2
         self.frame = 0
         self.liveTime=5.0
         if BoomUp.image == None:
@@ -122,4 +127,5 @@ class BoomUp:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime
