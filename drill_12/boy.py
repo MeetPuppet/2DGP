@@ -2,6 +2,7 @@ import game_framework
 from pico2d import *
 from ball import Ball
 
+import ghost
 import game_world
 
 # Boy Run Speed
@@ -197,19 +198,3 @@ class Boy:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
-
-class ghost:
-    def __init__(self):
-        self.x, self.y = 1600 // 2, 90
-        # Boy is only once created, so instance image loading is fine
-        self.image = load_image('animation_sheet.png')
-        self.dir = 1
-        self.angle = 3.14 * 2
-        self.frame = 0
-        self.event_que = []
-        pass
-    def update(self):
-        pass
-    def draw(self):
-        pass
-    pass
