@@ -138,22 +138,7 @@ next_state_table = {
 }
 
 
-def getAngle(startPoint, endPoint):
 
-    Xdistance = endPoint[0] - startPoint[0]
-    Ydistance = endPoint[1] - startPoint[1]
-    distance = math.sqrt(Xdistance ** 2 + Ydistance ** 2)
-
-    angle = math.acos(Xdistance / distance)
-
-    if endPoint[1] > startPoint[1] :
-        angle = (3.141592*2) - angle
-        if angle > (3.141592*2):
-            angle -= (3.141592*2)
-
-    return angle
-
-    pass
 
 class Boy:
 
