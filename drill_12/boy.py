@@ -47,7 +47,6 @@ class IdleState:
             boy.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
             boy.velocity += RUN_SPEED_PPS
-        boy.timer = int(get_time())
 
     @staticmethod
     def exit(boy, event):
@@ -58,16 +57,13 @@ class IdleState:
 
     @staticmethod
     def do(boy):
-        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-        if boy.timer+10 <= int(get_time()):
-            boy.add_event(SLEEP_TIMER)
 
     @staticmethod
     def draw(boy):
         if boy.dir == 1:
-            boy.image.clip_draw(int(boy.frame) * 100, 300, 100, 100, boy.x, boy.y)
+            boy.image.clip_draw(int(boy.frameX) * 100, 300, 100, 100, boy.x, boy.y)
         else:
-            boy.image.clip_draw(int(boy.frame) * 100, 200, 100, 100, boy.x, boy.y)
+            boy.image.clip_draw(int(boy.frameX) * 100, 200, 100, 100, boy.x, boy.y)
 
 
 class RunState:
@@ -87,22 +83,26 @@ class RunState:
 
     @staticmethod
     def exit(boy, event):
+        if boy.velocity > 0:
+            boy.dir=1
+        else:
+            boy.dir=-1
         if event == SPACE:
             boy.fire_ball()
 
     @staticmethod
     def do(boy):
-        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        boy.frameX = (boy.frameX + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         # fill here
         boy.x += boy.velocity * game_framework.frame_time
         boy.x = clamp(25, boy.x, 1600 - 25)
 
     @staticmethod
     def draw(boy):
-        if boy.dir == 1:
-            boy.image.clip_draw(int(boy.frame) * 100, 100, 100, 100, boy.x, boy.y)
+        if boy.velocity > 0:
+            boy.image.clip_draw(int(boy.frameX) * 100, 100, 100, 100, boy.x, boy.y)
         else:
-            boy.image.clip_draw(int(boy.frame) * 100, 0, 100, 100, boy.x, boy.y)
+            boy.image.clip_draw(int(boy.frameX) * 100, 0, 100, 100, boy.x, boy.y)
 
 
 class SleepState:
@@ -117,14 +117,14 @@ class SleepState:
 
     @staticmethod
     def do(boy):
-        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        boy.frameX = (boy.frameX + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
     @staticmethod
     def draw(boy):
         if boy.dir == 1:
-            boy.image.clip_composite_draw(int(boy.frame) * 100, 300, 100, 100, 3.141592 / 2, '', boy.x - 25, boy.y - 25, 100, 100)
+            boy.image.clip_composite_draw(int(boy.frameX) * 100, 300, 100, 100, 3.141592 / 2, '', boy.x - 25, boy.y - 25, 100, 100)
         else:
-            boy.image.clip_composite_draw(int(boy.frame) * 100, 200, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
+            boy.image.clip_composite_draw(int(boy.frameX) * 100, 200, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
 
 
 
@@ -147,10 +147,11 @@ class Boy:
         # Boy is only once created, so instance image loading is fine
         self.image = load_image('animation_sheet.png')
         # fill here
+        self.ghost=None
         self.font = load_font('ENCR10B.TTF', 16)
         self.dir = 1
         self.velocity = 0
-        self.frame = 0
+        self.frameX,self.frameY = 0,0
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)

@@ -7,7 +7,7 @@
 # layer 5: Boom Objects
 # layer 6: enemyBullet Objects
 
-objects = [[],[],[],[],[],[]]
+objects = [[],[],[],[],[],[],[]]
 
 import math
 def getDistance(startPoint, endPoint):
@@ -21,7 +21,7 @@ def getAngle(startPoint, endPoint):
     Ydistance = endPoint[1] - startPoint[1]
     distance = math.sqrt(Xdistance ** 2 + Ydistance ** 2)
 
-    angle = math.acos(Xdistance / distance)
+    angle = math.cos(Xdistance / distance)
 
     if endPoint[1] > startPoint[1] :
         angle = (3.141592*2) - angle
