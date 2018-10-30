@@ -47,6 +47,7 @@ class IdleState:
             boy.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
             boy.velocity += RUN_SPEED_PPS
+        boy.timer = int(get_time())
 
     @staticmethod
     def exit(boy, event):
@@ -57,6 +58,9 @@ class IdleState:
 
     @staticmethod
     def do(boy):
+        boy.frameX = (boy.frameX + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        if boy.timer+10 <= int(get_time()):
+            boy.add_event(SLEEP_TIMER)
 
     @staticmethod
     def draw(boy):
@@ -109,10 +113,17 @@ class SleepState:
 
     @staticmethod
     def enter(boy, event):
+        if boy.dir == 1:
+            boy.ghost = ghost.ghost((boy.x,boy.y),True)
+            game_world.add_object(boy.ghost, 1)
+        else:
+            boy.ghost = ghost.ghost((boy.x,boy.y),False)
+            game_world.add_object(boy.ghost, 1)
         boy.frame = 0
 
     @staticmethod
     def exit(boy, event):
+        game_world.remove_object(boy.ghost)
         pass
 
     @staticmethod
