@@ -60,8 +60,6 @@ class IdleState:
         boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         if boy.timer+10 <= int(get_time()):
             boy.add_event(SLEEP_TIMER)
-        print(boy.timer)
-        print(get_time())
 
     @staticmethod
     def draw(boy):
@@ -93,7 +91,7 @@ class RunState:
 
     @staticmethod
     def do(boy):
-        boy.frame =  (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         # fill here
         boy.x += boy.velocity * game_framework.frame_time
         boy.x = clamp(25, boy.x, 1600 - 25)
@@ -163,7 +161,7 @@ class Boy:
         # Boy is only once created, so instance image loading is fine
         self.image = load_image('animation_sheet.png')
         # fill here
-        #self.font = load_font('ENCR10B.TTF', 16)
+        self.font = load_font('ENCR10B.TTF', 16)
         self.dir = 1
         self.velocity = 0
         self.frame = 0
@@ -181,6 +179,8 @@ class Boy:
         self.event_que.insert(0, event)
 
     def update(self):
+        print(self.timer)
+        print(get_time())
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
@@ -191,7 +191,7 @@ class Boy:
     def draw(self):
         self.cur_state.draw(self)
         # fill here
-        #self.font.draw(self.x-60,self.y-50, '(Time: %3.2f)' % get_time(), (0,0,0))
+        self.font.draw(self.x-60,self.y+50, '(Time: %3.2f)' % get_time(), (0,0,0))
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
