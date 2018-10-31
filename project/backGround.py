@@ -1,4 +1,11 @@
 from pico2d import *
+import game_framework
+
+PIXEL_PER_METER = (10.0 / 0.3)
+RUN_SPEED_KMPH = 30.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 class Stage:
     def __init__(self, stage):
@@ -15,12 +22,17 @@ class Stage:
         self.image2 = load_image("image/map.jpg")
         pass
     def update(self):
-        self.frame1X -= 20
-        self.frame2X -= 20
+        moveRange =RUN_SPEED_PPS*game_framework.frame_time
+
         if self.frame1X < -1004:
-            self.frame1X=self.frame1X*-1
+            self.frame1X = self.frame2X + 1004
+        else:
+            self.frame1X -= moveRange
+
         if self.frame2X < -1004:
-            self.frame2X=self.frame2X*-1
+            self.frame2X = self.frame1X + 1004
+        else:
+            self.frame2X -= moveRange
 
         pass
     def render(self):

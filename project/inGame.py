@@ -134,7 +134,9 @@ def handle_events():
             player.handle_event(event)
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1:
+            game_world.add_object(Coin((1024//2, 768//2)), 3)
             game_world.add_object(PowerUp((1024//2, 768//2)), 3)
+            game_world.add_object(BoomUp((1024//2, 768//2)), 3)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
             game_world.add_object(Scarfy(0), 2)
@@ -144,18 +146,20 @@ def handle_events():
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_3:
             game_world.add_object(Fireball((1024//2, 768//2),player.getPoint()), 5)
+            game_world.add_object(enemyBullet((1024//2, 768//2),player.getPoint()), 5)
+            game_world.add_object(SirKibbleCutter((1024//2, 768//2)), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_4:
-            game_world.add_object(Batafire(), 2)
+            game_world.add_object(boss1, 2)
             pass
-        if (event.type, event.key) ==NUM_FIVE:
+        if event.type == SDL_KEYDOWN and event.key == SDLK_5:
+            boss1.Kill()
             pass
 
 
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
-    delay(0.038)
 
 
 def draw():

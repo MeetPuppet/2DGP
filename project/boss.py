@@ -1,6 +1,21 @@
 from pico2d import *
 import game_world
+import game_framework
 import random
+
+
+# fill expressions correctly
+PIXEL_PER_METER = (10.0 / 0.3)
+RUN_SPEED_KMPH = 20.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# fill expressions correctly
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
+
 class Batafire:
     IDLE = None
     READY = None
@@ -14,7 +29,7 @@ class Batafire:
         self.frame = 0
         self.state = 0
         self.guarding = 0
-        self.wait = 180
+        self.wait = 10
         self.backMove = False
         self.UpMove = False
         self.falling = 5
@@ -36,17 +51,17 @@ class Batafire:
         if self.HP <= 0: self.state = 4
 
         if self.state == 0:
-            self.frame = (self.frame + 1) % 10
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 10
 
             if self.backMove == True:
-                self.x+=8
+                self.x+=RUN_SPEED_PPS*game_framework.frame_time
             else:
-                self.x-=8
+                self.x-=RUN_SPEED_PPS*game_framework.frame_time
             if self.x > 974:
                 if self.UpMove == True:
-                    self.y+=5
+                    self.y+=RUN_SPEED_PPS*game_framework.frame_time
                 else:
-                    self.y-=5
+                    self.y-=RUN_SPEED_PPS*game_framework.frame_time
 
             if self.x < 612:
                 self.backMove = True
@@ -62,38 +77,38 @@ class Batafire:
                 pass
 
 
-            self.wait -= 1
+            self.wait -= game_framework.frame_time
             if self.wait < 0:
                 self.frame = 0
                 self.state = 1
             pass
 
         elif self.state == 1:
-            self.frame = self.frame + 1
-            if self.frame == 3:
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if int(self.frame) == 3:
                 if random.randint(0,1) == 0:
                     self.state = 2
-                    self.wait = 30
+                    self.wait = 3
                 else:
                     self.state = 3
                 self.frame = 0
             pass
 
         elif self.state == 2:
-            self.wait -= 1
-            self.frame = (self.frame + 1) % 4
+            self.wait -= game_framework.frame_time
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.wait < 0:
-                self.wait = 180
+                self.wait = 10
                 self.frame = 0
                 self.state = 0
                 pass
             pass
         elif self.state == 3:
-            self.frame = (self.frame + 1) % 4
+            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.x > -300 :
-                self.x-=50
+                self.x-=(RUN_SPEED_PPS*6)*game_framework.frame_time
             else:
-                self.wait = 180
+                self.wait = 10
                 self.frame = 0
                 self.x = 1300
                 self.state = 0
@@ -107,7 +122,7 @@ class Batafire:
             self.falling-=0.2
 
             if self.falling > -1 :
-                delay(0.1)
+                get_time()
 
             if self.y < -150:
                 game_world.remove_object2(self, 2)
@@ -116,19 +131,19 @@ class Batafire:
         pass
     def render(self):
         if self.state == 0:
-            self.IDLE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            self.IDLE.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
         if self.state == 1:
-            self.READY.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            self.READY.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
         if self.state == 2:
-            self.FIRE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            self.FIRE.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
         if self.state == 3:
-            self.CHARGE.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            self.CHARGE.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
         if self.state == 4:
-            self.DEAD.clip_draw(self.frame * 428, 0 , 428, 448, self.x, self.y)
+            self.DEAD.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
         pass
     pass
