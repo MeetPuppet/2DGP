@@ -64,22 +64,22 @@ class InfiniteBackground:
         self.q3h = clamp(0, self.h - self.q3b, self.h)
 
         # quadrant 2
-        self.q2l = (int(self.center_object.x)-self.canvas_width//2)
+        self.q2l =  self.q3l
         self.q2b = 0
-        self.q2w = 0
-        self.q2h = 0
+        self.q2w = self.q3w
+        self.q2h = self.canvas_height - self.q3h
 
         # quadrand 4
         self.q4l = 0
-        self.q4b = 0
-        self.q4w = 0
-        self.q4h = 0
+        self.q4b = self.q3b
+        self.q4w = self.canvas_width - self.q3w
+        self.q4h = self.q3h
 
         # quadrand 1
         self.q1l = 0
         self.q1b = 0
-        self.q1w = 0
-        self.q1h = 0
+        self.q1w = self.q4w
+        self.q1h = self.q2h
 
 
     def handle_event(self, event):
