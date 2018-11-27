@@ -39,6 +39,9 @@ def resume():
 def get_boy():
     return boy
 
+def get_zlist():
+    return zlist
+
 zlist = []
 
 def create_new_world():
@@ -52,8 +55,7 @@ def create_new_world():
 
     for data in zombie_data_list:
         zombie = Zombie(data['name'], data['x'],data['y'], data['size'])
-        zlist += zombie
-        game_world.add_object(zombie, 1)
+        game_world.add_object(zombie, 2)
 
 
 
