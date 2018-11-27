@@ -173,26 +173,6 @@ class Boy:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 
-    def write_file(self):
-        ctime=(get_time() - self.start_time)
-
-        with open('data.json', 'r') as f:
-            data_list = json.load(f)
-        print(data_list)
-
-        for j in range(9):
-            for i in range(9):
-                if data_list[i]["time"] <= ctime:
-                    data_list[i]["time"], ctime = ctime, data_list[i]["time"]
-
-        f.close()
-
-
-        print(data_list)
-        with open('data.json', 'w') as f:
-            json.dump(data_list,f)
-
-        f.close()
 
 
         pass
